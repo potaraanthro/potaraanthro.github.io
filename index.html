@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Potara — Human × Machine</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#EDF1EF;
+  --panel:#FFFFFF;
+  --panel2:#E4EAE7;
+  --line:#D0D9D5;
+  --text:#101715;
+  --mute:#576460;
+  --jade:#0B8F63;
+  --gold:#A96A08;
+  --neon:#3ED598;
+  --amber:#E9B44C;
+  --deep:#0E1513;
+  --maxw:1120px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--paper);
+  color:var(--text);
+  font-family:'Space Grotesk',system-ui,sans-serif;
+  font-size:17px;line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:
+    repeating-linear-gradient(0deg, rgba(11,143,99,.13) 0, rgba(11,143,99,.13) 1px, transparent 1px, transparent 40px),
+    repeating-linear-gradient(90deg, rgba(11,143,99,.09) 0, rgba(11,143,99,.09) 1px, transparent 1px, transparent 80px),
+    repeating-linear-gradient(45deg, rgba(169,106,8,.10) 0, rgba(169,106,8,.10) 1px, transparent 1px, transparent 160px);
+  background-size:80px 80px,160px 160px,320px 320px;
+}
+.mono{font-family:'IBM Plex Mono',monospace}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 28px;position:relative;z-index:1}
+
+/* ---------- NAV ---------- */
+nav{
+  position:sticky;top:0;z-index:50;
+  background:rgba(237,241,239,.86);backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--line);
+}
+.nav-inner{max-width:var(--maxw);margin:0 auto;padding:0 28px;display:flex;align-items:center;justify-content:space-between;height:68px}
+.logo{display:flex;align-items:center;gap:12px;cursor:pointer}
+.logo-mark{width:26px;height:26px;flex:none}
+.logo-word{font-weight:700;letter-spacing:.22em;font-size:15px}
+.nav-links{display:flex;gap:6px}
+.nav-links button{
+  background:none;border:0;color:var(--mute);cursor:pointer;
+  font:inherit;font-size:14.5px;padding:9px 14px;border-radius:6px;
+  transition:color .15s,background .15s;
+}
+.nav-links button:hover{color:var(--text)}
+.nav-links button.active{color:var(--jade);background:rgba(11,143,99,.09)}
+.nav-links button:focus-visible,.btn:focus-visible{outline:2px solid var(--jade);outline-offset:2px}
+
+/* ---------- PAGES ---------- */
+.page{display:none;animation:pageIn .35s ease both}
+.page.on{display:block}
+@keyframes pageIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.page{animation:none}*{animation-duration:.001s !important;transition-duration:.001s !important}}
+
+/* ---------- SHARED ---------- */
+.eyebrow{font-family:'IBM Plex Mono',monospace;font-size:12.5px;letter-spacing:.14em;color:var(--gold);margin-bottom:14px}
+h1{font-size:clamp(40px,6.4vw,76px);line-height:1.02;font-weight:700;letter-spacing:-.02em}
+h2{font-size:clamp(28px,3.6vw,42px);line-height:1.1;font-weight:700;letter-spacing:-.015em}
+h3{font-size:20px;font-weight:600}
+.lede{font-size:clamp(18px,2vw,21px);color:var(--mute);max-width:34em;margin-top:22px}
+.lede b{color:var(--text)}
+.section{padding:96px 0;border-top:1px solid var(--line)}
+.section:first-of-type{border-top:0}
+.btn{
+  display:inline-block;font-weight:600;font-size:15.5px;
+  padding:14px 26px;border-radius:8px;cursor:pointer;border:0;font-family:inherit;
+  transition:transform .12s,box-shadow .12s,background .15s;
+}
+.btn:hover{transform:translateY(-1px)}
+.btn-jade{background:var(--jade);color:#FFFFFF;box-shadow:0 6px 20px rgba(11,143,99,.22)}
+.btn-jade:hover{background:#0A7E58}
+.btn-ghost{background:var(--panel);color:var(--text);border:1px solid var(--line)}
+.btn-ghost:hover{border-color:var(--jade);color:var(--jade)}
+.jp{writing-mode:vertical-rl;font-size:15px;letter-spacing:.5em;color:var(--mute);opacity:.45;user-select:none}
+.kicker{color:var(--jade)}
+.kicker-g{color:var(--gold)}
+
+/* ---------- HERO ---------- */
+.hero{padding:110px 0 90px;display:grid;grid-template-columns:1fr auto;gap:48px;align-items:center}
+.fusion{width:min(320px,32vw);height:auto;flex:none}
+.ring-j{stroke:var(--jade);animation:ringJ 2.2s cubic-bezier(.6,0,.2,1) both}
+.ring-g{stroke:var(--gold);animation:ringG 2.2s cubic-bezier(.6,0,.2,1) both}
+.core{fill:var(--text);opacity:0;animation:coreIn .8s ease 1.9s both}
+@keyframes ringJ{from{transform:translateX(-56px)}to{transform:none}}
+@keyframes ringG{from{transform:translateX(56px)}to{transform:none}}
+@keyframes coreIn{to{opacity:1}}
+.hero-tags{display:flex;gap:20px;margin-top:34px;flex-wrap:wrap}
+.hero-tags span{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--mute);border:1px solid var(--line);background:var(--panel);padding:7px 14px;border-radius:99px}
+
+/* ---------- STATS (inverted band) ---------- */
+.stats{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+  background:#1E2724;border-radius:14px;overflow:hidden;
+  box-shadow:0 18px 44px rgba(14,21,19,.16);
+}
+.stat{background:var(--deep);padding:30px 26px}
+.stat b{display:block;font-size:32px;font-weight:700;color:var(--neon)}
+.stat:nth-child(even) b{color:var(--amber)}
+.stat span{font-size:14px;color:#9AA6A1}
+
+/* ---------- CARDS ---------- */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:44px}
+.card{
+  background:var(--panel);border:1px solid var(--line);border-radius:14px;
+  padding:36px 32px;cursor:pointer;position:relative;overflow:hidden;
+  transition:border-color .2s,transform .15s,box-shadow .2s;
+}
+.card:hover{transform:translateY(-3px);box-shadow:0 14px 34px rgba(14,21,19,.10)}
+.card.j:hover{border-color:var(--jade)}
+.card.g:hover{border-color:var(--gold)}
+.card .tag{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.12em;margin-bottom:14px}
+.card.j .tag{color:var(--jade)}
+.card.g .tag{color:var(--gold)}
+.card p{color:var(--mute);margin-top:12px;font-size:15.5px}
+.card .go{margin-top:22px;font-weight:600;font-size:15px}
+.card.j .go{color:var(--jade)}
+.card.g .go{color:var(--gold)}
+
+/* ---------- HORIZON ---------- */
+.manifest{
+  margin-top:34px;border-left:2px solid var(--jade);padding:4px 0 4px 30px;
+  font-size:clamp(20px,2.5vw,27px);line-height:1.42;font-weight:500;color:var(--text);max-width:24em;
+}
+.manifest span{display:block;color:var(--mute);font-weight:400}
+.manifest b{font-weight:600}
+.horizon{margin-top:52px;display:grid;gap:0}
+.hz{
+  display:grid;grid-template-columns:150px 1fr;gap:34px;
+  padding:34px 0;border-top:1px solid var(--line);align-items:start;
+}
+.hz:last-child{border-bottom:1px solid var(--line)}
+.hz-year{
+  font-family:'IBM Plex Mono',monospace;font-size:15px;letter-spacing:.14em;
+  color:var(--jade);padding-top:4px;
+}
+.hz:nth-child(even) .hz-year{color:var(--gold)}
+.hz h3{margin-bottom:10px}
+.hz p{color:var(--mute);font-size:16px;max-width:40em}
+
+/* ---------- ROOM FILM ---------- */
+.film{
+  position:relative;border:1px solid var(--line);border-radius:14px;
+  overflow:hidden;background:var(--deep);margin-top:8px;
+}
+.film video{display:block;width:100%;height:auto}
+.film-bar{
+  display:flex;align-items:center;justify-content:space-between;gap:20px;
+  padding:14px 20px;border-top:1px solid rgba(255,255,255,.1);
+  background:var(--deep);color:#DCE3E0;
+  font-family:'IBM Plex Mono',monospace;font-size:12.5px;letter-spacing:.08em;
+}
+.film-bar .stages{display:flex;gap:14px;align-items:center}
+.film-bar .now{color:#8FA69E}
+.film-bar .then{color:var(--neon)}
+.film-bar .arrow{color:#5A6B66}
+.film-toggle{
+  background:transparent;border:1px solid rgba(255,255,255,.22);color:#DCE3E0;
+  font:inherit;padding:6px 14px;border-radius:99px;cursor:pointer;
+}
+.film-toggle:hover{border-color:var(--neon);color:var(--neon)}
+.film-toggle:focus-visible{outline:2px solid var(--neon);outline-offset:2px}
+.film-cap{margin-top:16px;color:var(--mute);font-size:15px;max-width:44em}
+
+/* ---------- SPEC TABLE ---------- */
+.spec{width:100%;border-collapse:collapse;margin-top:36px;font-size:15px;background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.spec th{
+  text-align:left;font-family:'IBM Plex Mono',monospace;font-size:12.5px;
+  letter-spacing:.1em;color:var(--gold);padding:20px 18px 14px;border-bottom:1px solid var(--line);font-weight:500;
+  background:var(--panel2);
+}
+.spec td{padding:16px 18px;border-bottom:1px solid var(--line);vertical-align:top;color:var(--mute)}
+.spec tr:last-child td{border-bottom:0}
+.spec td:first-child{color:var(--text);font-weight:600;white-space:nowrap}
+.spec td.m{font-family:'IBM Plex Mono',monospace;font-size:13.5px;color:var(--jade);white-space:nowrap}
+
+/* ---------- SERVICE ROWS ---------- */
+.rows{margin-top:40px;display:grid;gap:20px}
+.row{
+  display:grid;grid-template-columns:200px 1fr;gap:28px;
+  background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:34px 32px;
+}
+.row h3{color:var(--jade)}
+.row.g h3{color:var(--gold)}
+.row p{color:var(--mute);font-size:15.5px}
+.row ul{margin-top:12px;color:var(--mute);font-size:15px;padding-left:18px;display:grid;gap:6px}
+
+/* ---------- DREAM ---------- */
+.dream{padding:110px 0;text-align:left}
+.dream h2{font-size:clamp(34px,5vw,58px);max-width:15em}
+.dream .big-mute{color:var(--mute)}
+.pillars{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;margin-top:56px}
+
+/* ---------- ABOUT ---------- */
+.about-grid{display:grid;grid-template-columns:340px 1fr;gap:56px;align-items:start;padding-top:80px}
+.headshot{
+  position:sticky;top:100px;margin:0;
+  border-radius:16px;border:1px solid var(--line);overflow:hidden;
+  background:var(--panel);box-shadow:0 18px 44px rgba(14,21,19,.12);
+}
+.headshot img{display:block;width:100%;aspect-ratio:4/5;object-fit:cover;filter:grayscale(1) contrast(1.06) brightness(1.01)}
+.headshot::before{
+  content:"";position:absolute;inset:0;pointer-events:none;z-index:2;
+  background:linear-gradient(155deg,rgba(14,21,19,.10),transparent 45%,rgba(14,21,19,.16));
+  mix-blend-mode:multiply;
+}
+.headshot figcaption{
+  position:absolute;left:0;right:0;bottom:0;z-index:3;
+  padding:56px 22px 18px;display:flex;flex-direction:column;gap:3px;
+  background:linear-gradient(transparent,rgba(14,21,19,.9));
+  font-family:'IBM Plex Mono',monospace;
+}
+.hs-name{font-size:14px;letter-spacing:.16em;color:#FFFFFF}
+.hs-role{font-size:12.5px;letter-spacing:.1em;color:var(--neon)}
+.about-copy p{color:var(--mute);margin-bottom:22px;max-width:38em}
+.about-copy p b{color:var(--text)}
+.pull{
+  border-left:3px solid var(--jade);padding:6px 0 6px 24px;margin:36px 0;
+  font-size:22px;line-height:1.4;color:var(--text);font-weight:500;max-width:26em;
+}
+
+/* ---------- FOOTER ---------- */
+footer{border-top:1px solid var(--line);padding:64px 0;margin-top:40px;background:var(--deep);color:#DCE3E0;position:relative;z-index:1}
+.foot{display:flex;justify-content:space-between;align-items:flex-start;gap:32px;flex-wrap:wrap}
+footer .logo-word{color:#FFFFFF}
+.foot .mono{color:#93A09B;font-size:13.5px;line-height:2}
+.foot .mono a:hover{color:var(--neon)}
+
+@media(max-width:880px){
+  .hero{grid-template-columns:1fr;padding-top:70px}
+  .fusion{display:none}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .split,.pillars{grid-template-columns:1fr}
+  .row{grid-template-columns:1fr}
+  .about-grid{grid-template-columns:1fr}
+  .headshot{position:static;max-width:340px}
+  .jp{display:none}
+  .nav-links button{padding:9px 9px;font-size:13.5px}
+  .spec td:first-child,.spec td.m{white-space:normal}
+}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-inner">
+    <div class="logo" onclick="go('home')">
+      <svg class="logo-mark" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+        <circle cx="12" cy="16" r="9" stroke="#0B8F63" stroke-width="2"/>
+        <circle cx="20" cy="16" r="9" stroke="#A96A08" stroke-width="2"/>
+      </svg>
+      <span class="logo-word">POTARA</span>
+    </div>
+    <div class="nav-links" role="tablist">
+      <button id="tab-home" class="active" onclick="go('home')">Home</button>
+      <button id="tab-infra" onclick="go('infra')">Infrastructure</button>
+      <button id="tab-digital" onclick="go('digital')">Digital</button>
+      <button id="tab-about" onclick="go('about')">About</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ============ HOME ============ -->
+<main id="page-home" class="page on">
+  <div class="wrap">
+    <section class="hero">
+      <div>
+        <div class="eyebrow">DIGITAL WORKPLACE CONSULTANCY — MANCHESTER, UK</div>
+        <h1>Human insight.<br>Machine precision.<br><span class="kicker">Fused.</span></h1>
+        <p class="lede">Potara builds workplaces where people and technology stop negotiating and start amplifying each other. Rooms that work. Systems that think. Teams that fly.</p>
+        <div class="hero-tags">
+          <span>20 COUNTRIES</span><span>ECB · NATWEST · BT</span><span>MICROSOFT-CERTIFIED STANDARDS</span>
+        </div>
+        <div style="margin-top:36px;display:flex;gap:14px;flex-wrap:wrap">
+          <button class="btn btn-jade" onclick="go('infra')">Fix the room</button>
+          <button class="btn btn-ghost" onclick="go('digital')">Upgrade the system</button>
+        </div>
+      </div>
+      <div style="display:flex;gap:28px;align-items:center">
+        <svg class="fusion" viewBox="0 0 240 200" fill="none" aria-hidden="true">
+          <circle class="ring-j" cx="120" cy="100" r="72" stroke-width="2.5" fill="none"/>
+          <circle class="ring-g" cx="120" cy="100" r="72" stroke-width="2.5" fill="none" stroke-dasharray="4 7"/>
+          <circle class="core" cx="120" cy="100" r="5"/>
+        </svg>
+        <div class="jp" aria-hidden="true">融合 — 人と機械</div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="stats">
+        <div class="stat"><b>20</b><span>countries of meeting rooms designed &amp; delivered</span></div>
+        <div class="stat"><b>11,000</b><span>staff hours returned per year, one transformation</span></div>
+        <div class="stat"><b>£150k</b><span>programme delivered end-to-end. On time. On budget.</span></div>
+        <div class="stat"><b>53→95%</b><span>the adoption curve we engineer toward</span></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="eyebrow">TWO DISCIPLINES. ONE PRACTICE.</div>
+      <h2>The room. The system.<br>You need both.</h2>
+      <div class="split">
+        <div class="card j" onclick="go('infra')">
+          <div class="tag">POTARA / INFRASTRUCTURE</div>
+          <h3>The physical layer</h3>
+          <p>Meeting rooms engineered to Microsoft-certified standards. Camera geometry, mic coverage, acoustics, Front Row. From white-glove assessment to hang &amp; bang installation.</p>
+          <div class="go">Enter the room ↗</div>
+        </div>
+        <div class="card g" onclick="go('digital')">
+          <div class="tag">POTARA / DIGITAL</div>
+          <h3>The intelligent layer</h3>
+          <p>Adoption, automation, AI in the flow of work. The unused power already sitting in your licence agreement — switched on, governed, and made ordinary.</p>
+          <div class="go">Enter the system ↗</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>The best rooms disappear.</h2>
+      <p class="lede">When infrastructure is right, nobody thinks about it. The far-end voice is in the room. The remote face is at the table. The meeting starts when people sit down — not eight minutes later.<br><br><b>That is the standard. Most rooms miss it. All of them can hit it.</b></p>
+      <div style="margin-top:34px"><button class="btn btn-jade" onclick="go('infra')">Book an assessment</button></div>
+    </section>
+  </div>
+</main>
+
+<!-- ============ INFRASTRUCTURE ============ -->
+<main id="page-infra" class="page">
+  <div class="wrap">
+    <section class="hero" style="padding-bottom:60px">
+      <div>
+        <div class="eyebrow">POTARA / INFRASTRUCTURE</div>
+        <h1>You can't cook<br>in a broken <span class="kicker">kitchen.</span></h1>
+        <p class="lede">Hybrid work runs on physics. Glass, air, light, distance. If the hardware layer is wrong, no software above it can save the meeting. We get the ingredients right — then everything else can cook.</p>
+      </div>
+      <div class="jp" aria-hidden="true">物理層 — 部屋</div>
+    </section>
+
+    <section class="section" style="padding-top:40px">
+      <div class="film">
+        <video id="roomFilm" poster="assets/room-poster.jpg" autoplay muted loop playsinline preload="metadata"
+               aria-label="A dated meeting room rebuilt into a certified hybrid room">
+          <source src="assets/room.mp4" type="video/mp4">
+        </video>
+        <div class="film-bar">
+          <div class="stages">
+            <span class="now">THE ROOM YOU HAVE</span>
+            <span class="arrow">&rarr;</span>
+            <span class="then">THE ROOM YOU PAID FOR</span>
+          </div>
+          <button class="film-toggle" id="filmBtn" onclick="toggleFilm()">Pause</button>
+        </div>
+      </div>
+      <p class="film-cap">Same footprint. Same furniture budget. The difference is geometry, acoustics and a device stack that was specified rather than guessed.</p>
+    </section>
+
+    <section class="section">
+      <div class="eyebrow">SERVICE 01</div>
+      <h2>The White-Glove<br>Infrastructural Assessment</h2>
+      <p class="lede">Every room, measured. Not a walkthrough with a clipboard — a full audit of your estate against Microsoft's certified room standards, delivered as a room-by-room scorecard with a costed remediation roadmap.</p>
+      <p class="lede" style="margin-top:14px">You leave knowing exactly what every room is worth, what it's missing, and what it costs to fix — in priority order. A document you can put in front of a board.</p>
+
+      <table class="spec">
+        <thead><tr><th>WHAT WE MEASURE</th><th>THE STANDARD</th><th>WHY IT MATTERS</th></tr></thead>
+        <tbody>
+          <tr><td>Camera height</td><td class="m">LENS AT SEATED EYE LEVEL</td><td>Cameras mounted too high look down on people. Eye level makes remote attendees peers, not spectators.</td></tr>
+          <tr><td>Field of view</td><td class="m">EVERY SEAT IN FRAME</td><td>FOV matched to room geometry so nobody is cropped out of the conversation.</td></tr>
+          <tr><td>Microphone distribution</td><td class="m">EVERY CHAIR IN PICKUP RANGE</td><td>Coverage mapped seat by seat. The person at the end of the table sounds like the person next to the mic.</td></tr>
+          <tr><td>Sound quality</td><td class="m">REVERB &amp; NOISE IN SPEC</td><td>Acoustic treatment and noise-floor checks. Intelligibility is a design property, not luck.</td></tr>
+          <tr><td>Display sizing</td><td class="m">READABLE FROM THE FARTHEST SEAT</td><td>Screen size, height and placement calculated from viewing distance — not from what fit on the wall.</td></tr>
+          <tr><td>Front Row readiness</td><td class="m">21:9 CANVAS · ROOM DEPTH · AI CAMERA</td><td>Whether the room can carry Teams Front Row — remote faces at eye level, content and chat in one field of vision.</td></tr>
+          <tr><td>Network &amp; power</td><td class="m">QOS · CABLING · RESILIENCE</td><td>The invisible layer that decides whether everything above it works on a Monday at 9am.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="section">
+      <div class="eyebrow">SERVICE 02</div>
+      <h2>Full design consultation</h2>
+      <p class="lede">Multi-room programmes, designed as one system. Standardised room types, Front Row signature spaces, procurement, technical and service design, change management — the whole arc, from first drawing to adopted estate.</p>
+      <div class="rows">
+        <div class="row">
+          <h3>Design</h3>
+          <div><p>Room typologies engineered per space — focus rooms, standard rooms, boardrooms, Front Row signature rooms. High-level and low-level designs with quantified success markers.</p></div>
+        </div>
+        <div class="row">
+          <h3>Deliver</h3>
+          <div><p>Procurement, install coordination, commissioning and certification. We've run this end-to-end at £150k programme scale — on time, on budget, 11,000 staff hours returned per year.</p></div>
+        </div>
+        <div class="row">
+          <h3>Adopt</h3>
+          <div><p>A perfect room nobody uses is an expensive sculpture. Training, champions, and measured adoption are built into the programme, not bolted on after.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="eyebrow">SERVICE 03</div>
+      <h2>Hang &amp; Bang</h2>
+      <p class="lede">Already know exactly what you need? Good. We hang it, cable it, commission it, test it, and walk away. Fixed price. No consultancy theatre. Pure execution.</p>
+      <p class="lede" style="margin-top:14px">Screens, bars, cameras, mics, Teams Rooms devices — mounted to spec, cabled cleanly, certified working before we leave the building.</p>
+      <div style="margin-top:36px;display:flex;gap:14px;flex-wrap:wrap">
+        <button class="btn btn-jade" onclick="go('about')">Book an assessment</button>
+        <button class="btn btn-ghost" onclick="go('about')">Get a hang &amp; bang quote</button>
+      </div>
+    </section>
+  </div>
+</main>
+<!-- ============ DIGITAL ============ -->
+<main id="page-digital" class="page">
+  <div class="wrap">
+    <section class="dream">
+      <div class="eyebrow">POTARA / DIGITAL</div>
+      <h2><span class="big-mute">The office was never the building.</span><br>It was always the connection.<br>We engineer the <span class="kicker-g">connection.</span></h2>
+      <div class="manifest">
+        <b>Picture Monday, 2030.</b>
+        <span>Your team doesn't book rooms. Rooms book themselves. They know who's arriving, what the meeting needs, and configure the space before the door opens.</span>
+        <span>Distance is dead. The person in Singapore sits at the same table as the person in Seattle.</span>
+        <span>AI attends every meeting, captures every decision, drafts every action before the coffee is cold.</span>
+        <b>This isn't a project you buy. It's a system you design.</b>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="eyebrow">THE LONG VIEW</div>
+      <h2>We plan in decades,<br>not quarters.</h2>
+      <p class="lede">Most consultancies sell you next year. Next year is not interesting — next year is a licence renewal. The question worth asking is what your organisation should be capable of when the people you are hiring now are running it.</p>
+      <div class="horizon">
+        <div class="hz">
+          <div class="hz-year">2030</div>
+          <div>
+            <h3>The room disappears</h3>
+            <p>Space becomes responsive rather than bookable. Rooms recognise the meeting, load the context, and shape light, sound and framing around it. Presence stops being a function of geography and becomes a function of design. Nobody dials in. Everybody is simply there.</p>
+          </div>
+        </div>
+        <div class="hz">
+          <div class="hz-year">2035</div>
+          <div>
+            <h3>The organisation remembers</h3>
+            <p>Every decision your organisation has ever made becomes retrievable, with its reasoning attached. Institutional memory stops walking out of the door at retirement. A graduate joining you inherits twenty years of hard-won judgement on their first morning — and the person who earned it is still credited for it.</p>
+          </div>
+        </div>
+        <div class="hz">
+          <div class="hz-year">2040</div>
+          <div>
+            <h3>Work becomes intent</h3>
+            <p>You stop issuing instructions and start declaring intent. The system proposes; you exercise judgement. Everything below the level of judgement is handled. What remains for humans is the part that was always the point — taste, ethics, responsibility, the decision nobody else can be asked to make for you.</p>
+          </div>
+        </div>
+      </div>
+      <p class="lede" style="margin-top:44px"><b>None of this arrives on a Tuesday.</b> It gets built in increments, by organisations that decided fifteen years earlier where they were going. The ones who get there will not be the ones who bought the most AI. They will be the ones who knew what they were building toward while everyone else was comparing licence tiers.</p>
+    </section>
+
+    <section class="section">
+      <div class="eyebrow">WHAT WE BUILD</div>
+      <h2>Four moves to the future of work</h2>
+      <div class="pillars">
+        <div class="card g" style="cursor:default">
+          <div class="tag">01 / ADOPTION ENGINEERING</div>
+          <h3>Light up what you already own</h3>
+          <p>Most estates run at half power. We've engineered adoption from 53% toward 95% — with utilisation plans, champions and measurement, not posters in the lift.</p>
+        </div>
+        <div class="card j" style="cursor:default">
+          <div class="tag">02 / AUTOMATION</div>
+          <h3>Kill the repetitive week</h3>
+          <p>Power Platform portals, workflows and knowledge bases. One onboarding portal we built cut training time 35% and support tickets 12% in two months.</p>
+        </div>
+        <div class="card j" style="cursor:default">
+          <div class="tag">03 / AI IN THE FLOW OF WORK</div>
+          <h3>Copilot, made ordinary</h3>
+          <p>Not a chatbot on the side — AI grounded in your data, your processes, your house style, surfaced where people already work. Governed, evaluated, owned by you.</p>
+        </div>
+        <div class="card g" style="cursor:default">
+          <div class="tag">04 / ENDPOINT &amp; DEVICE</div>
+          <h3>Every device, one brain</h3>
+          <p>Unified Endpoint Management, Intune consolidation, Autopilot zero-touch deployment. Thousands of devices, one coherent estate, no drawer of orphaned kit.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Symbiosis, not replacement.</h2>
+      <p class="lede">We are not romantic about technology. We are romantic about people — and precise about what machines should take off their hands. The organisations that win the next decade won't be the ones with the most AI. They'll be the ones where humans and machines each do what only they can do.</p>
+      <div class="pull" style="margin-top:40px">Your people, amplified. Your systems, awake. Your building, optional.</div>
+      <div style="margin-top:36px"><button class="btn btn-jade" onclick="go('about')">Start the conversation</button></div>
+    </section>
+  </div>
+</main>
+
+<!-- ============ ABOUT ============ -->
+<main id="page-about" class="page">
+  <div class="wrap">
+    <div class="about-grid">
+      <div>
+        <figure class="headshot">
+          <img src="assets/headshot.jpg" alt="Yasin Hayow, founder of Potara">
+          <figcaption>
+            <span class="hs-name">YASIN HAYOW</span>
+            <span class="hs-role">Founder · Potara</span>
+          </figcaption>
+        </figure>
+      </div>
+      <div class="about-copy">
+        <div class="eyebrow" style="margin-top:20px">THE PERSON BEHIND THE PRACTICE</div>
+        <h2>Every technology<br>is a pedagogy.</h2>
+        <p style="margin-top:26px">I'm <b>Yasin Hayow</b>. There is probably nobody else in this country holding both halves of this job at once: a senior digital workplace consultant who has designed and delivered programmes in around twenty countries — for the <b>European Central Bank, NatWest and BT</b>, and on behalf of Microsoft across Europe and North America — and a qualified teacher.</p>
+        <p>Those look like two careers. They are one question, asked twice. <b>How does a person become more capable than they were yesterday?</b></p>
+        <p>There is an old word for what interests me here: <b>anthropotechnics</b> — the practices by which human beings shape themselves. We have never simply used tools. We have always practised ourselves into something through them. The book, the timetable, the workshop, the drill, the instrument. Technology has never been neutral equipment standing beside us. It is the thing we become fluent in, and fluency changes who is holding it.</p>
+        <p>So every system teaches, whether or not anyone intended a lesson. It teaches a posture. An attention span. A tolerance for interruption. A quiet belief about what work is for and how much of yourself it is reasonable to spend. Most enterprise technology teaches appallingly and nobody notices, because nobody in the procurement meeting was watching for the lesson.</p>
+        <div class="pull">Nobody was ever transformed by a licence agreement. Transformation is a practice — rehearsed, coached, repeated badly, and eventually invisible.</div>
+        <p>Teaching gave me the word the technology industry is missing: <b>practice</b>. Not practice as in a firm. Practice as in the thing you return to tomorrow, still clumsy, until one day it belongs to you. The older name for it is <b>ascesis</b> — training, exercise, deliberate and unglamorous repetition in the direction of something you have chosen to become. I stood in front of thirty adolescents on wet Thursday afternoons, which is the most honest feedback loop that exists: you find out inside ninety seconds whether your explanation worked. No rollout plan I have ever seen accounts for rehearsal. Rehearsal is the entire job.</p>
+        <p>And then the part consultants get most wrong. They arrive braced for resistance. I have almost never found it. What I find is <b>desire</b> — people who want badly to be excellent at their work and are prevented by their tooling, their calendar, their inbox, a process nobody has revisited since 2014. The wanting is already there, at full pressure, pointed at nothing.</p>
+        <div class="pull">People want to do well. Organisations want to do well. My job isn't to persuade anyone of anything — it's to find where the wanting is already straining against the wall, and open a route.</div>
+        <p><b>Potara is named after an idea I've carried since I was a kid:</b> two beings fuse and become something neither could be alone. That is a better model for expertise than the one we actually use, which is to keep specialists in separate buildings and hope somebody eventually introduces them. Here the engineer and the teacher, the human and the machine, are one practice — each making the other more capable than it could manage on its own.</p>
+        <p><b>What I believe:</b> the future of work is not a forecast to be waited for. It is a design decision, available now, to whoever is willing to take it seriously enough to make it.</p>
+        <p><b>What I do:</b> design the conditions under which people and machines make each other better — and stay long enough to teach the practice.</p>
+        <div style="margin-top:36px;display:flex;gap:14px;flex-wrap:wrap">
+          <a class="btn btn-jade" href="mailto:Yasinahmedh@gmail.com">Email Yasin</a>
+          <a class="btn btn-ghost" href="tel:+447851835464">+44 7851 835464</a>
+        </div>
+      </div>
+    </div>
+    <div style="height:80px"></div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <div>
+      <div class="logo" style="cursor:default">
+        <svg class="logo-mark" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+          <circle cx="12" cy="16" r="9" stroke="#3ED598" stroke-width="2"/>
+          <circle cx="20" cy="16" r="9" stroke="#E9B44C" stroke-width="2"/>
+        </svg>
+        <span class="logo-word">POTARA</span>
+      </div>
+      <p class="mono" style="margin-top:14px">Two disciplines. One practice.<br>Manchester, UK — worldwide delivery.</p>
+    </div>
+    <div class="mono">
+      <a href="mailto:Yasinahmedh@gmail.com">Yasinahmedh@gmail.com</a><br>
+      <a href="tel:+447851835464">+44 7851 835464</a><br>
+      <span style="opacity:.6">© 2026 Potara Consulting</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+function toggleFilm(){
+  var v=document.getElementById('roomFilm'),b=document.getElementById('filmBtn');
+  if(v.paused){v.play();b.textContent='Pause';}else{v.pause();b.textContent='Play';}
+}
+if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+  window.addEventListener('DOMContentLoaded',function(){
+    var v=document.getElementById('roomFilm'),b=document.getElementById('filmBtn');
+    if(v){v.removeAttribute('autoplay');v.pause();b.textContent='Play';}
+  });
+}
+function go(p){
+  document.querySelectorAll('.page').forEach(el=>el.classList.remove('on'));
+  document.getElementById('page-'+p).classList.add('on');
+  document.querySelectorAll('.nav-links button').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+p).classList.add('active');
+  window.scrollTo({top:0,behavior:'instant'});
+}
+</script>
+</body>
+</html>
