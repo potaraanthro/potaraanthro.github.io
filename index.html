@@ -649,7 +649,7 @@
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   var HOLD = 1000;                 // pause after a finished line
-  var CHAR = 42, SPACE = 70;       // typing pace
+  var CHAR = 34, SPACE = 56;       // typing pace
   var LINES = [
     { t: 'Hi!' },
     { t: "We're from the future..." },
@@ -690,7 +690,7 @@
     encounter.classList.add('revealed');
     if (reduced) { el.textContent = LINES[LINES.length - 1].t; showYes(); return; }
     setTimeout(function () { dialog.classList.add('open'); }, 240);
-    setTimeout(startLine, 560);
+    setTimeout(startLine, 1060);
   }
   if ('IntersectionObserver' in window) {
     var io = new IntersectionObserver(function (entries) {
@@ -717,7 +717,7 @@
     var i = 0;
     (function step() {
       el.textContent = TEXT.slice(0, ++i);
-      if (i < TEXT.length) timer = setTimeout(step, TEXT.charAt(i - 1) === ' ' ? 70 : 60);
+      if (i < TEXT.length) timer = setTimeout(step, TEXT.charAt(i - 1) === ' ' ? 56 : 48);
       else { done = true; yes.classList.add('in'); }
     })();
   }
@@ -732,7 +732,7 @@
   function start() {
     if (started) return; started = true;
     box.classList.add('open');
-    setTimeout(type, reduced ? 0 : 320);
+    setTimeout(type, reduced ? 0 : 500);
   }
   if ('IntersectionObserver' in window) {
     var io = new IntersectionObserver(function (entries) {
