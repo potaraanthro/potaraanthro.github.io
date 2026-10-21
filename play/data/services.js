@@ -8,7 +8,7 @@ export const SERVICES = {
     what: 'We survey your rooms, design the right kit for each one, install it cleanly and keep it healthy.',
     get: 'A design pack and kit list per room, a tidy install, and estate monitoring after go-live.',
     time: 'Start with a site survey. Pilot one room, then roll out across the estate.',
-    proof: [{ n: '£150k', t: 'Hybrid meeting room programme for a utility company, on time and on budget.' }, { n: '11,000', t: 'Staff hours a year returned, estimated, from that programme.' }],
+    proof: [{ n: 'On time', t: 'Hybrid meeting room programme for a utility company, delivered on time and on budget.' }, { n: '11,000', t: 'Staff hours a year returned, estimated, from that programme.' }],
     demo: 'Build a room in 3D, step by step',
     story: { who: 'Priya', role: 'Operations manager', look: 'v1',
       before: 'Ten minutes to start every meeting. Remote colleagues were faces on a laptop at the end of the table.', bl: ['Cables across the floor', 'Nobody could hear the far end', 'A helpdesk ticket a day'],
@@ -47,7 +47,7 @@ export const SERVICES = {
     what: "Workshops and short video series designed with Rosenshine's principles: small steps, practice, review.",
     get: 'A video series in your brand, practice tasks, and a review schedule that makes it stick.',
     time: 'Scoped per programme, from a single workshop to a full series.',
-    proof: [{ n: '£200k+', t: 'Training and content deals delivered on behalf of Microsoft in Europe and North America.' }, { n: 'QTS', t: 'Designed by a qualified teacher, not a slide reader.' }],
+    proof: [{ n: 'Microsoft', t: 'Training and content delivered on behalf of Microsoft in Europe and North America.' }, { n: 'QTS', t: 'Designed by a qualified teacher, not a slide reader.' }],
     demo: "Watch the workshop, flip through Rosenshine's ten",
     story: { who: 'Tom', role: 'IT trainer', look: 'v2',
       before: 'Hour-long webinars. A week later nobody remembered which button to press.', bl: ['Slides read aloud', 'No practice', 'Helpdesk flooded after launch'],
@@ -93,8 +93,8 @@ export const CHALLENGES = [
 ];
 // The headline proof, shown in the Services panel.
 export const PROOF = [
-  { n: '£150k', t: 'Hybrid meeting room programme, delivered on time and on budget' },
+  { n: 'On time', t: 'Hybrid meeting room programme for a utility company, on budget' },
   { n: '11,000', t: 'Staff hours a year returned (estimated)' },
   { n: '78% → 93%', t: 'Attainment across a four-lesson maths sequence' },
-  { n: '£200k+', t: 'Training delivered on behalf of Microsoft' },
+  { n: 'Microsoft', t: 'Training delivered on their behalf in Europe and North America' },
 ];

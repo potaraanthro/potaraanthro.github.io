@@ -142,9 +142,9 @@ export function drawPerson(g, s, x, y, w = 18, h = 26, sy = 0, sh = 26) {
 }
 // Hand-made sprite sheets (assets/sprites): rows down/right/left/up, 3 frames, 18x26 cells. Code-drawn looks are the fallback.
 const sheetImg = {};
-export const spritesReady = Promise.all(['hero', 'nixy', 'yasin', 'yasin-sit', 'battle-yasin-wolf', 'battle-charge', 'battle-hero-back', 'battle-nixy-back'].map(n => new Promise(r => {
+export const spritesReady = Promise.all(['hero', 'nixy', 'yasin', 'yasin-sit', 'battle-yasin-wolf', 'battle-charge', 'battle-hero-back', 'battle-nixy-back', 'battle-ghost'].map(n => new Promise(r => {
   const i = new Image(); i.onload = () => { sheetImg[n] = i; r(); }; i.onerror = () => r(); i.src = `assets/sprites/${n}.png`;
-}))).then(() => { for (const k in personCache) delete personCache[k]; for (const k in portCache) delete portCache[k]; });
+}))).then(() => { for (const k in personCache) delete personCache[k]; for (const k in portCache) delete portCache[k]; for (const k in ghostCache) delete ghostCache[k]; });
 export const sheet = n => sheetImg[n] || null;
 export function person(lookKey, dir, f = 0, sit = false) {
   const k = lookKey + dir + f + (sit ? 's' : '');
@@ -182,9 +182,35 @@ export function moth(f) {
 
 // ---------------- portraits for the dialogue box (non-Nixy speakers) ----------------
 const portCache = {};
+// a ghostly resident: the same person, drained to pale ice, legs fading to nothing (cached per frame)
+const ghostCache = {};
+export function ghostOf(lookKey, dir, f = 0) {
+  const k = lookKey + dir + f; if (ghostCache[k]) return ghostCache[k];
+  const s = person(lookKey, dir, f), [c, g] = mk(s.width, s.height);
+  g.drawImage(s, 0, 0);
+  // keep the dark outline, turn everything else to pale ice by brightness
+  const d = g.getImageData(0, 0, c.width, c.height), px = d.data;
+  for (let i = 0; i < px.length; i += 4) {
+    if (!px[i + 3]) continue; const L = px[i] * .3 + px[i + 1] * .59 + px[i + 2] * .11;
+    if (L < 46) { px[i] = 18; px[i + 1] = 24; px[i + 2] = 46; continue; }
+    const v = Math.min(1, .35 + (L - 46) / 170); px[i] = 112 + 124 * v; px[i + 1] = 132 + 112 * v; px[i + 2] = 176 + 79 * v;
+  }
+  g.putImageData(d, 0, 0);
+  g.globalCompositeOperation = 'destination-out';
+  const fade = g.createLinearGradient(0, c.height - 10, 0, c.height); fade.addColorStop(0, 'rgba(0,0,0,0)'); fade.addColorStop(1, 'rgba(0,0,0,1)');
+  g.fillStyle = fade; g.fillRect(0, c.height - 10, c.width, 10);
+  return ghostCache[k] = c;
+}
 export function portrait(key) {
   if (portCache[key]) return portCache[key];
   const [c, g] = mk(48, 48);
+  if (key === 'ghost' || key === 'past') {
+    const bg = g.createLinearGradient(0, 0, 0, 48); bg.addColorStop(0, '#0b0f1e'); bg.addColorStop(1, '#25304d'); g.fillStyle = bg; g.fillRect(0, 0, 48, 48);
+    const gi = sheetImg['battle-ghost'];
+    if (key === 'past' && gi) g.drawImage(gi, 4, 0, 40, 40, 4, 6, 40, 40);
+    else { const s = ghostOf('v1', 0, 0); g.drawImage(s, ((s.width - 16) >> 1), 0, 16, 16, 0, 2, 48, 48); }
+    return portCache[key] = c.toDataURL();
+  }
   const bg = g.createLinearGradient(0, 0, 0, 48); bg.addColorStop(0, '#1a1840'); bg.addColorStop(1, '#3b0764'); g.fillStyle = bg; g.fillRect(0, 0, 48, 48);
   if (key === 'moth') g.drawImage(moth(0), 0, 0, 24, 18, 0, 6, 48, 36);
   else { const s = person(key, 0, 0); g.drawImage(s, 1, 0, 16, 16, 0, 2, 48, 48); }

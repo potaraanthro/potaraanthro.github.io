@@ -32,12 +32,12 @@ function split(text, max = 104) {
   if (cur.trim()) out.push(cur.trim()); return out;
 }
 
-function setSpeaker(sp, mood) {
+function setSpeaker(sp, mood, look) {
   const s = SPEAKERS[sp] || SPEAKERS.sys;
   tag.textContent = s.name; tag.hidden = !s.name; tag.style.setProperty('--c', s.color);
   dlg.dataset.speaker = sp; dlg.dataset.mood = mood || '';
-  if (sp === 'sys' || sp === 'user') { por.hidden = true; }
-  else { por.hidden = false; const img = por.querySelector('img'); const src = sp === 'nixy' ? NIXY_IMG : sp === 'yasin' ? (mood === 'happy' || mood === 'wink' ? YAS.smile : YAS.neutral) : portrait(sp); img.dataset.base = src; if (img.getAttribute('src') !== src) img.src = src; img.alt = s.name; }
+  if (sp === 'sys' || sp === 'user' || sp === 'you') { por.hidden = true; }
+  else { por.hidden = false; const img = por.querySelector('img'); const src = sp === 'nixy' ? NIXY_IMG : sp === 'yasin' ? (mood === 'happy' || mood === 'wink' ? YAS.smile : YAS.neutral) : portrait(look || sp); img.dataset.base = src; if (img.getAttribute('src') !== src) img.src = src; img.alt = s.name; }
 }
 
 function typeOut(text, speed = 22) {
@@ -66,17 +66,17 @@ on('act', () => { if (!dlg.hidden && !choosing) advance(); });
 dlg.addEventListener('pointerdown', e => { if (e.target.closest('button,input,a,label')) return; if (!choosing) advance(); else if (typing) typing.finish(); });
 on('point', () => { if (uiOpts.canvasAdvance && !dlg.hidden && !choosing) advance(); });
 
-export async function show(sp, text, mood) {
-  dlg.hidden = false; if (xBtn) xBtn.hidden = !exitable; setSpeaker(sp, mood); opts.innerHTML = ''; dlg.classList.remove('choosing');
+export async function show(sp, text, mood, look) {
+  dlg.hidden = false; if (xBtn) xBtn.hidden = !exitable; setSpeaker(sp, mood, look); opts.innerHTML = ''; dlg.classList.remove('choosing');
   text = fill(text); live.textContent = (SPEAKERS[sp]?.name ? SPEAKERS[sp].name + ': ' : '') + text;
   await pend(r => typeOut(text).then(r)); // X during typing must also end the flow
 }
 // say: a list of [speaker, text, mood] lines, each waits for a click / Space
 export async function say(lines) {
   if (!Array.isArray(lines[0])) lines = [lines];
-  for (const [sp, text, mood] of lines) {
+  for (const [sp, text, mood, look] of lines) { // look: whose face to show, for speakers without their own portrait
     for (const chunk of split(fill(text))) {
-      await show(sp, chunk, mood);
+      await show(sp, chunk, mood, look);
       await pend(r => waiting = r);
     }
   }
@@ -86,16 +86,22 @@ export function cue(l) { if (!l) return; show(l[0], l[1], l[2]); }
 export function closeDialogue() { dlg.hidden = true; if (xBtn) xBtn.hidden = true; opts.innerHTML = ''; typing = null; waiting = null; choosing = false; }
 
 // choose: buttons inside the box. Primary choices big, secondary smaller below.
-export function choose(list, prompt) {
+export function choose(list, prompt, o2 = {}) {
   return pend(res => {
    (async () => {
     if (prompt) { await show(prompt[0], prompt[1], prompt[2]); }
     else if (dlg.hidden) { dlg.hidden = false; setSpeaker('user'); line.textContent = ''; }
     choosing = true; next.hidden = true; dlg.classList.add('choosing'); opts.innerHTML = '';
-    const prim = document.createElement('div'); prim.className = 'prim'; const sec = document.createElement('div'); sec.className = 'sec';
+    const prim = document.createElement('div'); prim.className = 'prim' + (o2.grid ? ' grid' : ''); const sec = document.createElement('div'); sec.className = 'sec';
     list.forEach((o, i) => {
       const b = document.createElement('button'); b.type = 'button'; b.className = o.primary ? 'opt' : 'opt small';
-      b.innerHTML = `<kbd>${i + 1}</kbd>`; b.append(document.createTextNode(o.t));
+      b.innerHTML = `<kbd>${i + 1}</kbd>`;
+      if (o.d) { // a move with a short description under its name
+        const sp = document.createElement('span'); sp.className = 'ot'; const nm = document.createElement('b'); nm.textContent = o.t; const ds = document.createElement('small'); ds.textContent = o.d;
+        sp.append(nm, ds); b.append(sp); b.classList.add('move');
+      } else b.append(document.createTextNode(o.t));
+      if (o.locked) { b.classList.add('locked'); b.setAttribute('aria-disabled', 'true'); }
+      if (o.cls) b.classList.add(o.cls);
       b.addEventListener('click', () => pick(i));
       (o.primary ? prim : sec).appendChild(b);
     });
@@ -154,6 +160,14 @@ export function showCard(title, body, kicker = 'FRAGMENT') {
     const off = on('esc', close);
   });
 }
+
+// ---------------- battle move card: the name of an attack, with its description underneath ----------------
+export function moveCard(name, desc, side) {
+  const c = $('#bcard'); if (!c) return;
+  c.className = 'bcard ' + (side || ''); c.innerHTML = ''; const b = document.createElement('b'); b.textContent = name; const d = document.createElement('span'); d.textContent = desc; c.append(b, d);
+  c.hidden = false; c.classList.remove('in'); void c.offsetWidth; c.classList.add('in');
+}
+export function hideMoveCard() { const c = $('#bcard'); if (c) c.hidden = true; }
 
 // ---------------- toast (non-blocking quips) ----------------
 const toast = $('#toast'); let toastOff = null;

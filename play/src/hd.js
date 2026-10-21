@@ -40,11 +40,13 @@ function particles(g, w, k, cam, t, region, vw, vh) {
     p.life += 16;
     if (region === 'city') { p.y -= .05 + p.v * .08; p.x += Math.sin(t / 1800 + p.ph) * .05; }
     else if (region === 'woods') { p.x += Math.sin(t / 900 + p.ph) * .18; p.y += Math.cos(t / 1100 + p.ph * 2) * .12; }
+    else if (region === 'old') { p.y += .06 + p.v * .05; p.x -= .05; }
     else { p.y += .02; p.x += .03 * Math.sin(t / 2000 + p.ph); }
     if (p.x < cam.x - 10 || p.x > cam.x + vw + 10 || p.y < cam.y - 10 || p.y > cam.y + vh + 10) { p.x = cam.x + Math.random() * vw; p.y = region === 'city' ? cam.y + vh + 4 : cam.y + Math.random() * vh; }
     const sx = (p.x - cam.x) * k, sy = (p.y - cam.y) * k;
     if (region === 'woods') { const a = Math.max(0, Math.sin(t / 500 + p.ph * 3)); glow(g, sx, sy, 6 * k * .5, '#d9f99d', .55 * a); g.fillStyle = rgba('#f7fee7', .9 * a); g.fillRect(sx - 1, sy - 1, 2, 2); }
     else if (region === 'city') { const a = .35 + .35 * Math.sin(t / 700 + p.ph * 5); g.fillStyle = rgba(p.v > .5 ? '#ffd60a' : '#7ff3ea', a); g.beginPath(); g.arc(sx, sy, Math.max(1, k * .35 * (1 + p.v)), 0, 7); g.fill(); }
+    else if (region === 'old') { const a = .14 + .12 * Math.sin(t / 700 + p.ph); g.fillStyle = rgba('#c7d2fe', a); g.fillRect(sx, sy, Math.max(1, k * .45), Math.max(1, k * .45)); }
     else { g.fillStyle = rgba(region === 'inside' ? '#bff7f2' : '#e8dcc0', .18 + .12 * Math.sin(t / 900 + p.ph)); g.fillRect(sx, sy, Math.max(1, k * .4), Math.max(1, k * .4)); }
   }
 }
@@ -64,13 +66,16 @@ export function hdWorld(g, w, k0) {
   g.save(); g.globalCompositeOperation = 'lighter';
   const pl = w.player, region = !m.sky ? 'inside' : !pl ? 'city' : pl.x < 18 ? 'old' : pl.x < (m.cityX || 27) ? 'woods' : 'city';
 
+  // how much of the view is the haunted old town (1 = all of it): the sun and its rays stay over the city
+  const hz = m.haunt, haunt = hz ? Math.max(0, Math.min(1, ((hz.x1 * T) - (cam.x + vw / 2)) / ((hz.x1 - hz.x0 + 6) * T))) : 0;
   if (m.sky) {
     // the low sun blooms through everything
-    const skyH = m.skyRows * T, [sx, sy] = S(238 - cam.x * .06 + cam.x, skyH - 30);
-    glow(g, sx, sy, 150 * k * .5, '#ffb48a', .5); glow(g, sx, sy, 46 * k * .5, '#fff1cf', .9);
+    const skyH = m.skyRows * T, [sx, sy] = S(238 - cam.x * .06 + cam.x, skyH - 30), sunA = 1 - haunt;
+    glow(g, sx, sy, 150 * k * .5, '#ffb48a', .5 * sunA); glow(g, sx, sy, 46 * k * .5, '#fff1cf', .9 * sunA);
+    if (haunt > 0) { const [mx, my] = S(cam.x + vw * .22, 1.6 * T); glow(g, mx, my, 60 * k * .5, '#c7d2fe', .35 * haunt); glow(g, mx, my, 12 * k * .5, '#eef2ff', .8 * haunt); }
     // god rays
     g.save(); g.translate(sx, sy); g.rotate(Math.sin(t / 9000) * .05);
-    for (let i = 0; i < 7; i++) { const a = 1.55 + i * .26 + Math.sin(t / 7000 + i) * .03, len = 520 * k * .5, wd = .045 + (i % 3) * .02;
+    if (sunA > .05) for (let i = 0; i < 7; i++) { const a = 1.55 + i * .26 + Math.sin(t / 7000 + i) * .03, len = 520 * k * .5, wd = .045 + (i % 3) * .02;
       const gr = g.createLinearGradient(0, 0, Math.cos(a) * len, Math.sin(a) * len); gr.addColorStop(0, 'rgba(255,214,170,.14)'); gr.addColorStop(1, 'rgba(255,214,170,0)');
       g.fillStyle = gr; g.beginPath(); g.moveTo(0, 0); g.lineTo(Math.cos(a - wd) * len, Math.sin(a - wd) * len); g.lineTo(Math.cos(a + wd) * len, Math.sin(a + wd) * len); g.fill(); }
     g.restore();
@@ -90,6 +95,8 @@ export function hdWorld(g, w, k0) {
       case 'gate': glow(g, x + 8 * u, y - 26 * u, 12 * u, '#ffd60a', .6); break;
       case 'star': glow(g, x + 8 * u, y + 4 * u, 10 * u, '#ffffff', p.found ? .2 : .55 + .35 * pulse); break;
       case 'phone': glow(g, x + 8 * u, y - 2 * u, 10 * u, '#fde68a', .16); break;
+      case 'oldlamp': if (p.on) { glow(g, x + 8 * u, y - 14 * u, 22 * u, '#f6c35a', .42); glow(g, x + 8 * u, y + 10 * u, 18 * u, '#f6c35a', .1); } break;
+      case 'grave': glow(g, x + 8 * u, y + 6 * u, 10 * u, '#a5b4fc', .06 + .05 * pulse); break;
       case 'tv': case 'bigscreen': case 'whiteboard': glow(g, x + pw / 2, y + 8 * u, Math.max(pw, 40 * u) * .7, p.kind === 'tv' ? '#a78bfa' : '#38bdf8', .26 + .08 * pulse); break;
       case 'workstation': case 'desk': glow(g, x + pw / 2, y - 6 * u, 18 * u, '#22d3ee', .22); break;
       case 'shelf': glow(g, x + pw / 2, y, pw * .6, '#6b4dff', .12); break;
@@ -154,6 +161,8 @@ export function hdWorld(g, w, k0) {
     glow(g, x, y + 3 * k, 9 * k, (t / 400 | 0) % 2 ? '#ef4444' : '#22d3ee', .7);
   }
 
+  // ghosts give off a cold light
+  for (const e of w.ents) if (e.ghost && inView(e.px, e.py)) { const [x, y] = S(e.px + 8, e.py - 2); glow(g, x, y, 16 * k * .5, '#a5c8ff', .22 + .1 * Math.sin(t / 260 + e.x)); }
   // Nixy carries a little light with her
   if (w.nixy && !w.nixy.hidden && !w.greyNixy) { const [x, y] = S(w.nixy.px + 8, w.nixy.py + 4); glow(g, x, y, 14 * k, '#22d3ee', .28); }
 

@@ -16,6 +16,9 @@ export const SPEAKERS = {
   coach: { name: 'COACH', color: '#93c5fd' },
   clerk: { name: 'ARCADE CLERK', color: '#f9a8d4' },
   npc: { name: 'COLLEAGUE', color: '#bef264' },
+  ghost: { name: 'GHOSTLY RESIDENT', color: '#a5b8de' },
+  past: { name: 'GHOST OF THE PAST', color: '#9fb4d8' },
+  you: { name: 'YOU', color: '#ffd60a' },
   sys: { name: '', color: '#ffffff' },
 };
 
@@ -73,8 +76,8 @@ export const S = {
   will: [['nixy', 'Aw shucks, I like your honesty.']],
   wont: [['nixy', "Ha! Famous last words. I'll hold you to it.", 'wink']], // DRAFT
   follow: [['nixy', 'Ok, follow me!']],
-  firstSight: [['nixy', "This is the old town. It still runs on fax machines. Through the woods, there's something better.", 'wink']], // DRAFT
-  citySight: [['nixy', "Potara Technicity! Keep an eye out for taped-up buildings. Secret projects. No peeking. Yet.", 'wink']], // DRAFT
+  firstSight: [['nixy', "This is the old town. It still runs on fax machines.", 'sheepish'], ['nixy', "And it's haunted. The residents never quite moved on. Stick close, there's something better through the woods.", 'thoughtful']], // DRAFT
+  citySight: [['nixy', "Potara Technicity! Lights on, rooms that work, nobody haunting the printer.", 'happy'], ['nixy', "Keep an eye out for taped-up buildings. Secret projects. No peeking. Yet.", 'wink']], // DRAFT
 
   // ---------- F. Route quips ----------
   quips: ['This way!', 'Keep up!', 'Psst, try poking things.', 'Nearly there!', 'Ooh, what is that?'], // DRAFT
@@ -98,7 +101,7 @@ export const S = {
   shortPitch: [
     ['yasin', "Nixy is our company avatar. You probably have no idea what I'm talking about, but in a few short years, you will. Every company will have one."],
     ['yasin', "Potara is a future workplace consultancy. We don't just solve challenges, we build the future for our customers."],
-    ['yasin', "There's more to this story. I'll be right here. Come back and I'll tell you the rest."], // DRAFT
+    ['yasin', "There's more to this story. I'll be on the bench in Technicity. Come and find me and I'll tell you the rest."], // DRAFT
   ],
 
   // ---------- H. Nixy's ask ----------
@@ -250,12 +253,73 @@ S.trainMenu = [{ t: 'Watch the workshop video', v: 'video', primary: true }, { t
 S.trainTv = [['coach', "Here's a workshop we ran. Watch how small the steps are."]]; // DRAFT
 S.trainRosen = [['coach', "Rosenshine studied the best teachers and found what they have in common. Ten ideas. We use all of them."]]; // DRAFT
 S.trainEnd = [['coach', "Want training like that for your team? We'll build it around your tools and your people."]]; // DRAFT
+// Colleagues in Technicity: each one says how they work differently. Meetings happen indoors, in rooms built for them.
 S.npcLines = {
-  npc1: ['We used to spend a morning setting up this room. Now it takes two minutes.', 'The old town still has a fax machine. Please do not tell them.'],
-  npc2: ['Our hybrid meetings finally work. Everybody can see the screen. Everybody can hear.', 'I used to dread Mondays. This room fixed that.'],
-  npc3: ['I am rehearsing with my avatar. She has better timing than I do.', 'Nixy is on the invite for tomorrow. She never forgets to follow up.'],
-  npc4: ['Shh, this is a stand-up. We stand up. It is very modern.', 'Training here is short, practical and weirdly fun.'],
+  // outside, by the booking kiosk
+  npc1: ["I'm booking a room for this afternoon. The kiosk shows which rooms are free, and every one of them has a camera that works.", "We come in for the things that are better together. Workshops, whiteboards, lunch. Focus work happens wherever we focus best."],
+  npc2: ["I'm heading into the Meeting Room Studio. Our team meeting's in there, where everyone can see and hear each other.", "Remote colleagues used to be faces on a laptop at the end of the table. Now they're on the wall, life size, same as us."],
+  // outside, on the south plaza
+  npc4: ["I work from home on Mondays and Fridays. I come in for people, not for a desk.", "Nobody books a room and then hunts for a cable here. You walk in, tap once, and you're in the meeting."],
+  // inside the Meeting Room Studio: a real hybrid meeting, in a room built for one
+  meet1: ["We're mid stand-up. Half the team is in Leeds, and you'd never know. The camera follows whoever's talking.", "Ten minutes, everyone heard, done. Then we all get on with our day."],
+  meet2: ["See the wall? That's our Leeds office. They're not squinting at a laptop, they're in the room with us.", "We start on time now. The room's ready before we are."],
+  // inside Virtual Foreground
+  avatar: ["I'm glad I can use my virtual avatar and I don't have to be on camera at 9 o'clock on a Monday!", "My avatar gives my update at the early stand-up. I join properly at ten, with a coffee and a functioning face."],
 }; // DRAFT
+// The old town's ghostly residents. They never moved on.
+S.ghostLines = [
+  ["I've been waiting for this fax since 1998. Any day now.", "Don't go to the new town. They have... ideas."],
+  ["Is it still Monday? It always feels like Monday here.", "My password is 'password'. It always has been. It always will be."],
+  ["Shh. The printer is sleeping. Nobody wakes the printer.", "We had a meeting about having fewer meetings. It's still going."],
+  ["Nobody comes back from Technicity the same.", "Change is coming. I can feel it in my floppy disks."],
+]; // DRAFT
+
+// ---------- The first battle: the Ghost of the Past, at the edge of the old town ----------
+S.ghostIntro = [
+  ['sys', 'A cold wind blows through the old town...'],
+  ['past', 'Leaving? Nobody leaves the old town.'],
+  ['nixy', "Uh oh. It's the Ghost of the Past. It won't let anyone through to Technicity.", 'surprised'],
+  ['sys', 'The GHOST OF THE PAST blocks the way! Defeat it to continue.'],
+];
+S.ghostAsk = 'What will you do?';
+// the four moves; the description shows under each name
+S.ghostMoves = [
+  { v: 'opt', t: 'Optimism', d: 'Point at what could go right. Steady damage.' },
+  { v: 'cre', t: 'Creativity', d: 'Turn the problem into something new. Hits hard.' },
+  { v: 'use', t: "You're right, it's useless", d: 'Agree with the ghost and give up.' },
+  { v: 'emp', t: 'Unlock Empathy', d: 'See the person behind the fear. Finishing move.', locked: 'Locked. Thin out its gloom first.' },
+];
+S.ghostHit = {
+  opt: [['you', 'Machines can take the boring bits. We keep the interesting ones.'], ['sys', "It's super effective! The ghost's gloom flickers."]],
+  cre: [['you', 'What if the AI books the room and takes the notes, and we do the thinking?'], ['sys', 'A critical hit! The ghost has never seen an idea like that.']],
+  use: [['you', "You're right. It's useless."], ['sys', "It's not effective at all... The Ghost of the Past feeds on it and grows stronger."]],
+};
+S.ghostLocked = [['nixy', "Not yet! Its gloom is too thick to reach. Hit it with something hopeful first.", 'thoughtful']];
+S.ghostUnlock = [['nixy', "Look! Its gloom is thinning. I think you can reach it now. Try empathy.", 'happy'], ['sys', 'UNLOCK EMPATHY is ready!']];
+S.ghostCling = [['past', "You can't get rid of me that easily..."], ['nixy', "It's barely holding on. Stop fighting it. Try understanding it.", 'thoughtful']];
+// the ghost's three attacks, each with a description and the things it says
+S.ghostAttacks = {
+  despair: { t: 'Despair', d: 'Drags your mood down to the basement.', lines: ['AI is gonna take our jobs!', "It's all downhill from here. It always was."] },
+  hope: { t: 'Hopelessness', d: 'Convinces you nothing will ever change.', lines: ['We tried something new once. In 1998. Never again.', "Why bother learning it? They'll only change it next year."] },
+  redund: { t: 'Redundancy', d: "Whispers that you've already been replaced.", lines: ["A robot does your job now. It doesn't even take lunch.", "They'll automate you by Friday. Then they'll automate Friday."] },
+};
+S.ghostFaint = [['sys', 'Your resolve hits zero...'], ['nixy', "Hey. Get up. We're not done. Ghosts hate it when you keep going.", 'happy'], ['sys', 'Nixy restores your resolve!']];
+S.ghostEmpathy = [
+  ['you', "Hey. It sounds like you're scared of being left behind."],
+  ['you', "Lots of people are. You don't have to face it on your own."],
+  ['past', '...You... understand?'],
+];
+S.ghostReveal = [
+  ['sys', 'The Ghost of the Past turned into... the FOUNDER!'],
+  ['yasin', 'Ha. You got me.', 'happy'],
+  ['yasin', 'That ghost was me, ten years ago. Sure the machines were coming for my job.'],
+  ['yasin', "Turns out the trick isn't fighting the future. It's understanding the people who are scared of it."],
+  ['yasin', 'Nixy! Have you been spilling company secrets?'],
+  ['nixy', 'Yes!', 'sheepish'],
+  ['yasin', 'Good Nixy!'],
+  ['yasin', 'Have you been in good hands with Nixy?'],
+]; // DRAFT
+S.ghostAfter = [['nixy', "You beat the Ghost of the Past! Technicity is through the woods. Come on!", 'happy']]; // DRAFT
 export const FRAGMENTS = {
   star: { n: 1, t: 'Cybernetics', clue: 'Something in the night sky twinkles differently.',
     b: 'In 1948 Norbert Wiener named cybernetics after the Greek kybernetes, the steersman. Act, sense, adjust, repeat: people and machines steering together. Potara still works that way. Measure the room, tune it, measure again.' },

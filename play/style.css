@@ -335,6 +335,8 @@ td.st.tbc { color: #b45309; } td.st.aw { color: #6b7280; font-style: italic; } t
 #tStart:not(:first-child) { background: rgba(255, 255, 255, .08); color: #fff; border: 1px solid var(--line); box-shadow: none; }
 .tkeys { font-size: 12.5px; color: var(--muted); margin-top: 2.2em; display: flex; flex-wrap: wrap; gap: .5em 1.1em; align-items: center; }
 .tkeys kbd { margin-right: .3em; }
+.tkeys .kt { display: none; }
+@media (pointer: coarse) { .tkeys .kd { display: none; } .tkeys .kt { display: inline; font-size: 14px; color: #e9e6dc; } }
 .tnixy { position: absolute; right: clamp(-40px, 4vw, 80px); bottom: -2%; height: min(78vh, 720px); image-rendering: pixelated; filter: drop-shadow(0 0 60px rgba(25, 211, 197, .45)); animation: float 5s ease-in-out infinite; z-index: 1; pointer-events: none; }
 @keyframes float { 50% { transform: translateY(-14px); } }
 .looks { display: flex; gap: 16px; margin-top: 12px; flex-wrap: wrap; }
@@ -434,3 +436,57 @@ body.portrait #studio { position: fixed; z-index: 60; }
   box-shadow: 0 0 24px rgba(255, 214, 10, .14); transition: opacity .8s ease, border-color .2s; animation: dlgIn .6s var(--ease) both .8s; }
 #film .scorepill:hover, #film .scorepill:focus-visible { border-color: var(--gold); }
 #film .scorepill.gone { opacity: 0; pointer-events: none; }
+
+/* ---------- battle: moves with a description under each name, and the attack card ---------- */
+.opts .prim.grid { display: grid; grid-template-columns: 1fr 1fr; gap: .5em; }
+.opt.move { align-items: flex-start; padding: .6em .85em; }
+.opt.move .ot { display: flex; flex-direction: column; gap: .2em; min-width: 0; }
+.opt.move .ot b { font: 700 1em/1.2 var(--body); }
+.opt.move .ot small { font: 500 .78em/1.35 var(--body); color: #c9c4b4; }
+.opt.move kbd { margin-top: .15em; }
+.prim.grid .opt:first-child::after { display: none; }
+.opt.locked { opacity: .55; border-style: dashed; }
+.opt.locked .ot b::after { content: ' 🔒'; font-size: .85em; }
+.opt.ready { border-color: #f472b6; background: rgba(244, 114, 182, .14); box-shadow: 0 0 22px rgba(244, 114, 182, .35); animation: readyPulse 1.4s var(--ease) infinite; }
+@keyframes readyPulse { 50% { box-shadow: 0 0 34px rgba(244, 114, 182, .6); } }
+.opt.weak .ot b { color: #cbd5e1; }
+.bcard { position: absolute; top: 15%; left: 50%; transform: translateX(-50%); z-index: 16; pointer-events: none; text-align: center; min-width: min(60%, 320px); max-width: 86%;
+  background: rgba(12, 11, 20, .86); border: 1px solid rgba(255, 255, 255, .2); border-radius: 14px; padding: .7em 1.2em .75em; box-shadow: 0 14px 40px rgba(0, 0, 0, .45); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+.bcard b { display: block; font: 400 clamp(10px, 1.1vw, 15px)/1.3 var(--pix); letter-spacing: .04em; color: var(--gold); text-transform: uppercase; }
+.bcard span { display: block; margin-top: .45em; font: 500 clamp(11px, .95vw, 14px)/1.4 var(--body); color: #e9e6dc; }
+.bcard.enemy { border-color: rgba(139, 92, 246, .7); box-shadow: 0 0 30px rgba(139, 92, 246, .35); }
+.bcard.enemy b { color: #c4b5fd; }
+.bcard.you { border-color: rgba(255, 214, 10, .6); box-shadow: 0 0 30px rgba(255, 214, 10, .25); }
+.bcard.in { animation: bcIn .28s var(--ease); }
+@keyframes bcIn { from { opacity: 0; transform: translate(-50%, -8px) scale(.96); } }
+
+/* ---------- phones held sideways: the game fills the screen edge to edge ---------- */
+body.land #stage { width: var(--gw); height: var(--gh); }
+body.land #screen { border-radius: 0; box-shadow: none; }
+body.land { --fs: 13px; }
+body.land #dlg { left: 1.5%; right: 1.5%; bottom: 2%; gap: 8px; }
+body.land #dlg .box { min-height: 0; padding: 1em 1.1em .8em; }
+body.land #dlg .por { width: 64px; border-radius: 12px; }
+body.land .hb, body.land .chip { font-size: 9px; padding: .5em .7em; }
+body.land #hudTrad, body.land .brand b { display: none; }
+body.land .opt { padding: .5em .8em; }
+body.land .opts .prim, body.land .opts .sec { margin-top: .55em; }
+body.land #panel { position: fixed; z-index: 60; }
+body.land .opt.move .ot small { font-size: .74em; }
+/* ---------- phones held upright: an invitation to turn sideways ---------- */
+#rotate { display: none; }
+body.portrait.touch #rotate { display: flex; align-items: center; justify-content: center; gap: .7em; margin: 16px auto 18px; padding: .8em 1.2em; width: calc(100% - 20px); max-width: 420px;
+  font: 600 14px/1.35 var(--body); color: #e9e6dc; background: rgba(255, 255, 255, .06); border: 1px dashed rgba(255, 255, 255, .25); border-radius: 14px; cursor: pointer; text-align: left; }
+#rotate i { font-style: normal; font-size: 22px; display: inline-block; animation: tilt 2.4s var(--ease) infinite; }
+@keyframes tilt { 0%, 40% { transform: rotate(0); } 60%, 100% { transform: rotate(90deg); } }
+/* the battle owns the screen: no brand or objective over the status boxes */
+body.battle #hud .brand, body.battle #obj { display: none !important; }
+/* sideways phones: a compact move menu so both status boxes stay visible */
+body.land #dlg.choosing .box { padding: .7em .9em .6em; }
+body.land #dlg.choosing .line { font-size: .9em; min-height: 0; }
+body.land .opts .prim.grid { gap: .35em; margin-top: .4em; }
+body.land .opt.move { padding: .38em .7em; }
+body.land .opt.move .ot { gap: .05em; }
+body.land .opt.move .ot b { font-size: .95em; }
+body.land .opt.move .ot small { font-size: .72em; line-height: 1.25; }
+body.land .bcard { top: 10%; padding: .5em .9em .55em; }

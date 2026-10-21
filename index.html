@@ -597,7 +597,8 @@ footer{border-top:1px solid var(--line);padding-block:60px calc(40px + env(safe-
 .f-top{display:flex;justify-content:space-between;gap:30px;flex-wrap:wrap}
 .f-say{max-width:40ch;display:flex;flex-direction:column;gap:10px}
 .f-say p:first-child{font-family:var(--f-display);font-weight:700;font-size:24px;line-height:1.2;letter-spacing:-.02em}
-.f-say p+p{color:var(--blush);font-family:var(--f-pixel);font-size:17px}
+.f-say .f-by{color:#FF4D6D;font-family:var(--f-pixel);font-size:19px}
+.f-say .eyes{font-size:.9em}
 .f-links{display:flex;gap:clamp(28px,5vw,64px);flex-wrap:wrap}
 .f-links div{display:flex;flex-direction:column;gap:8px;min-width:0}
 .f-links .mono{color:var(--dim);margin-bottom:4px}
@@ -698,6 +699,101 @@ html.world-open,html.world-open body{overflow:hidden}
   .w-btn#wFull{display:none}
 }
 @media (prefers-reduced-motion:reduce){.w-car,.w-walker,.w-blink,.w-stars,.w-nixy{animation:none}.w-walker{left:12%}}
+
+/* ---- Nixy's World trailer ---- */
+.w-trailer{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;image-rendering:pixelated}
+.w-scrim{position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(90deg,rgba(5,8,22,.95) 0%,rgba(5,8,22,.8) 30%,rgba(5,8,22,.25) 52%,transparent 66%)}
+.w-rec{position:absolute;right:14px;bottom:14px;z-index:2;display:flex;align-items:center;gap:8px;font:8px/1 var(--f-8);color:var(--pearl);background:rgba(5,8,22,.8);padding:8px 10px;box-shadow:0 0 0 2px var(--void),0 0 0 3px var(--line-2)}
+.w-rec i{width:8px;height:8px;border-radius:50%;background:#FF4D6D;box-shadow:0 0 8px #FF4D6D;animation:wbl 1.2s steps(2) infinite}
+@media (max-width:899px){.w-scrim{background:linear-gradient(0deg,rgba(5,8,22,.97) 0%,rgba(5,8,22,.88) 46%,rgba(5,8,22,.15) 74%,transparent)}.w-rec{top:12px;bottom:auto;right:12px}.w-trailer{object-position:100% 50%}}
+/* ---- practices: process lists and Nixy's asides ---- */
+.proc{list-style:none;margin:6px 0 0;padding:0;display:flex;flex-direction:column;border-top:1px solid var(--line);counter-reset:pr}
+.proc li{counter-increment:pr;display:grid;grid-template-columns:40px minmax(0,1fr);column-gap:12px;row-gap:4px;padding:14px 0;border-bottom:1px solid var(--line)}
+.proc li::before{content:counter(pr,decimal-leading-zero);grid-row:1/span 3;font:10px/1 var(--f-8);color:var(--c);padding-top:6px}
+.proc b{font-family:var(--f-display);font-weight:700;font-size:18px;letter-spacing:-.01em}
+.proc span{color:var(--mist);font-size:15.5px}
+.chip8{display:flex;gap:12px;align-items:flex-start;margin-top:10px}
+.chip8 img{width:40px;height:40px;object-fit:cover;object-position:50% 0;background:var(--night-3);box-shadow:0 0 0 2px var(--void),0 0 0 4px var(--azure);flex:none}
+.chip8 p{position:relative;background:#0B0E2C;padding:16px 12px 10px;font:9px/1.95 var(--f-8);color:#fff;box-shadow:0 0 0 2px var(--void),0 0 0 4px var(--pearl);margin-left:4px}
+.chip8 .plate8{top:-12px;left:10px;font-size:7px;padding:4px 6px;color:#fff}
+/* Training quest log */
+.dm-train{display:grid;place-items:center;padding:6%}
+.ql{width:100%;max-width:520px;background:#0B0E2C;box-shadow:0 0 0 3px var(--void),0 0 0 6px var(--pearl),0 0 0 9px var(--void);padding:18px 18px 16px;display:flex;flex-direction:column;gap:12px}
+.ql-head{display:flex;justify-content:space-between;gap:10px;font:9px/1 var(--f-8);color:var(--lilac)}
+.ql-head b{color:var(--pearl);font-weight:400}
+.ql-steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.ql-steps li{display:grid;grid-template-columns:34px minmax(0,1fr) 16px;gap:12px;align-items:center;padding:8px 10px;border:2px solid rgba(195,180,255,.16);opacity:.42;transition:opacity .4s,border-color .4s,background-color .4s,box-shadow .4s}
+.ql-steps li.on{opacity:1;border-color:var(--lilac);background:rgba(195,180,255,.09);box-shadow:0 0 22px -8px var(--lilac)}
+.ql-steps li.done{opacity:.9}
+.ql-steps .ico{width:34px;height:34px;display:block}
+.ico svg{width:100%;height:100%;display:block}
+.ql-steps b{display:block;font:400 8.5px/1.6 var(--f-8);color:#fff}
+.ql-steps span{font-size:13px;color:var(--mist)}
+.ql-steps em{font:normal 10px/1 var(--f-8);color:var(--mint);opacity:0;transition:opacity .3s}
+.ql-steps li.done em{opacity:1}
+.ql-bar{height:8px;background:rgba(255,255,255,.08);box-shadow:inset 0 0 0 1px var(--line-2)}
+.ql-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--violet),var(--lilac));transition:width .6s var(--ease)}
+/* Digital Presentation character sheet */
+.dm-vf{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);align-items:end;gap:4%;padding:4% 6% 0 3%}
+.dm-vf .vf-nixy{position:relative;left:auto;bottom:auto;transform:none;width:100%;height:auto;align-self:end;-webkit-mask:linear-gradient(#000 82%,transparent);mask:linear-gradient(#000 82%,transparent);filter:drop-shadow(0 0 26px rgba(62,140,255,.55));animation:float 6s ease-in-out infinite}
+.cs{align-self:center;background:#0B0E2C;box-shadow:0 0 0 3px var(--void),0 0 0 6px var(--pearl),0 0 0 9px var(--void);padding:16px;display:flex;flex-direction:column;gap:8px;margin-bottom:4%}
+.cs-h{font:8px/1 var(--f-8);color:var(--ice);margin-bottom:4px}
+.cs-row{display:flex;flex-direction:column;gap:5px;padding:8px 10px;border:2px solid rgba(125,233,255,.14);opacity:.45;transition:opacity .4s,border-color .4s,background-color .4s}
+.cs-row.on{opacity:1;border-color:var(--azure);background:rgba(62,140,255,.1)}
+.cs-row span{font:7.5px/1 var(--f-8);color:var(--azure);text-transform:uppercase}
+.cs-row b{font-size:13.5px;font-weight:600;line-height:1.35}
+.sw{display:flex;align-items:center;gap:6px}
+.sw i{width:14px;height:14px;background:var(--s);box-shadow:0 0 0 2px var(--void)}
+/* The Arcade: kit select */
+.dm-arcade{display:block;padding:4.5%}
+.ws{position:relative;height:100%;display:flex;flex-direction:column;gap:10px;font-family:var(--f-8);color:#fff}
+.ws-top{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.ws-top b{font:400 clamp(11px,1.1vw,15px)/1 var(--f-8);color:var(--blush);text-shadow:0 0 12px rgba(255,143,179,.6)}
+.ws-top span{font-size:9px;color:var(--mist);white-space:nowrap}
+.ws-top em{font-style:normal;color:#fff}
+.ws-xp{height:8px;background:rgba(255,255,255,.08);box-shadow:inset 0 0 0 1px var(--line-2)}
+.ws-xp i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--violet),var(--blush));transition:width .7s var(--ease)}
+.ws-main{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:14px}
+.ws-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;align-content:center}
+.ws-t{position:relative;aspect-ratio:1;background:#0B0E2C;box-shadow:inset 0 0 0 2px rgba(255,143,179,.2);padding:17%;transition:background-color .2s}
+.ws-t svg{width:100%;height:100%;display:block}
+.ws-t.got{background:rgba(94,240,192,.12);box-shadow:inset 0 0 0 2px var(--mint)}
+.ws-t.cur{box-shadow:inset 0 0 0 3px var(--pearl),0 0 18px -2px var(--blush);background:#1d1446}
+.ws-t.cur::after{content:"P1";position:absolute;top:-7px;left:-5px;font:6.5px/1 var(--f-8);background:var(--blush);color:var(--void);padding:3px 4px}
+.ws-t.pick{animation:wsPick .16s steps(1) 6}
+@keyframes wsPick{50%{background:var(--pearl)}}
+.ws-card{background:#0B0E2C;box-shadow:0 0 0 2px var(--void),0 0 0 4px var(--pearl);padding:12px;display:flex;flex-direction:column;gap:7px;min-width:0}
+.ws-big{width:42%;aspect-ratio:1;align-self:center}
+.ws-big svg{width:100%;height:100%;display:block}
+.ws-card b{font:400 9.5px/1.5 var(--f-8);color:#fff}
+.ws-card p{font:13px/1.4 var(--f-body);color:var(--mist);margin:0}
+.ws-stats{display:flex;flex-direction:column;gap:5px;margin-top:auto}
+.ws-stat{display:grid;grid-template-columns:56px 1fr;align-items:center;gap:8px;font-size:6.5px;color:var(--mist)}
+.ws-stat i{height:6px;background:rgba(255,255,255,.08);position:relative}
+.ws-stat i::after{content:"";position:absolute;inset:0 auto 0 0;width:var(--v,0%);background:var(--blush);transition:width .5s var(--ease)}
+.ws-load{display:flex;align-items:center;gap:8px;font-size:8px;color:var(--mist)}
+.ws-load i{width:34px;height:34px;background:#0B0E2C;box-shadow:inset 0 0 0 2px var(--line-2);padding:6px;display:block}
+.ws-load i.full{box-shadow:inset 0 0 0 2px var(--mint),0 0 12px -2px var(--mint)}
+.ws-flash{position:absolute;left:50%;top:48%;z-index:3;transform:translate(-50%,-50%) rotate(-6deg) scale(.4);font:400 clamp(15px,2vw,26px)/1 var(--f-8);color:var(--void);background:var(--mint);padding:12px 16px;box-shadow:0 0 0 3px var(--void),0 0 0 6px var(--pearl),0 0 40px var(--mint);opacity:0;pointer-events:none;transition:opacity .15s,transform .35s cubic-bezier(.2,1.6,.4,1);white-space:nowrap}
+.ws-flash.on{opacity:1;transform:translate(-50%,-50%) rotate(-6deg) scale(1)}
+.ws-up{position:absolute;inset:-6%;z-index:4;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:radial-gradient(closest-side,rgba(64,40,150,.95),rgba(5,8,22,.97));opacity:0;pointer-events:none;transition:opacity .3s}
+.ws-up b{font:400 clamp(22px,3.4vw,44px)/1 var(--f-8);color:#FFD166;text-shadow:0 4px 0 #6d28d9,0 0 30px rgba(255,209,102,.7)}
+.ws-up span{font-size:11px;color:#fff}
+.ws-up.on{opacity:1}
+.ws-up.on b{animation:lvlB .3s steps(2) 6}
+@keyframes lvlB{50%{transform:translateY(-6px)}}
+.d-frame .dm-train,.d-frame .dm-arcade{padding-top:max(52px,9%)}
+@media (max-width:899px){
+  .d-inline:has(.dm-train),.d-inline:has(.dm-arcade),.d-inline:has(.dm-vf){aspect-ratio:auto}
+  .d-inline .dm-train,.d-inline .dm-arcade,.d-inline .dm-vf{position:relative;inset:auto}
+  .d-inline .dm-train{padding:18px 14px}
+  .ql{padding:14px 12px;gap:10px}.ql-steps li{grid-template-columns:26px minmax(0,1fr) 14px;padding:7px 8px;gap:10px}.ql-steps .ico{width:26px;height:26px}.ql-steps span{font-size:12px}
+  .d-inline .dm-arcade{padding:16px 12px}
+  .ws-main{grid-template-columns:1fr}.ws-card{flex-direction:row;flex-wrap:wrap;align-items:center}.ws-big{width:44px;align-self:center}.ws-card b{flex:1}.ws-card p,.ws-stats{flex-basis:100%}
+  .d-inline .dm-vf{padding:16px 12px 0;grid-template-columns:.8fr 1.2fr}
+  .cs{padding:12px;gap:6px}.cs-row b{font-size:12.5px}
+}
+@media (prefers-reduced-motion:reduce){.dm-vf .vf-nixy{animation:none}}
 </style>
 </head>
 <body>
@@ -706,8 +802,7 @@ html.world-open,html.world-open body{overflow:hidden}
     <a class="brand" href="#top" aria-label="Potara, back to top"><span class="brand-mark" aria-hidden="true"><i></i><i></i></span>POTARA</a>
     <nav class="nav-links" aria-label="Main">
       <a href="#approach" data-nav="approach">Approach</a>
-      <a href="#technicity" data-nav="technicity">Technicity</a>
-      <a href="#services" data-nav="services">Services</a>
+      <a href="#services" data-nav="services">Practices</a>
       <a href="#founder" data-nav="founder">Founder</a>
     </nav>
     <a class="nav-game" data-game href="play/">Play Nixy’s World ↗</a>
@@ -776,12 +871,9 @@ html.world-open,html.world-open body{overflow:hidden}
         </div>
         <div class="w-screen" id="wScreen">
           <div class="w-poster" id="wPoster">
-            <div class="w-stars" aria-hidden="true"></div>
-            <div class="w-sun" aria-hidden="true"></div>
-            <svg class="w-sky" viewBox="0 0 320 100" preserveAspectRatio="xMidYMax slice" shape-rendering="crispEdges" aria-hidden="true"><defs><pattern id="wwA" width="6" height="8" patternUnits="userSpaceOnUse"><rect x="2" y="2" width="2" height="3" fill="#7DE9FF" opacity=".8"/></pattern><pattern id="wwB" width="8" height="7" patternUnits="userSpaceOnUse"><rect x="3" y="2" width="2" height="2" fill="#FFB199" opacity=".85"/></pattern></defs><g fill="#141b57"><rect x="-4" y="41" width="17" height="59"/><rect x="16" y="58" width="18" height="42"/><rect x="35" y="40" width="18" height="60"/><rect x="54" y="42" width="11" height="58"/><rect x="67" y="65" width="12" height="35"/><rect x="79" y="45" width="19" height="55"/><rect x="101" y="60" width="20" height="40"/><rect x="121" y="66" width="18" height="34"/><rect x="139" y="58" width="10" height="42"/><rect x="150" y="69" width="19" height="31"/><rect x="172" y="42" width="15" height="58"/><rect x="188" y="56" width="18" height="44"/><rect x="208" y="70" width="17" height="30"/><rect x="225" y="53" width="17" height="47"/><rect x="245" y="65" width="18" height="35"/><rect x="265" y="56" width="15" height="44"/><rect x="282" y="66" width="10" height="34"/><rect x="292" y="64" width="16" height="36"/><rect x="310" y="66" width="16" height="34"/></g><rect x="58" y="26" width="4" height="74" fill="#10173d"/><rect x="49" y="26" width="22" height="3" fill="#3E8CFF"/><rect x="52" y="23" width="16" height="3" fill="#7DE9FF"/><rect x="59" y="14" width="2" height="9" fill="#10173d"/><rect class="w-blink" x="59" y="12" width="2" height="2" fill="#FF8FB3"/><rect x="236" y="18" width="4" height="82" fill="#10173d"/><rect x="227" y="18" width="22" height="3" fill="#3E8CFF"/><rect x="230" y="15" width="16" height="3" fill="#7DE9FF"/><rect x="237" y="6" width="2" height="9" fill="#10173d"/><rect class="w-blink" x="237" y="4" width="2" height="2" fill="#FF8FB3"/><rect x="0" y="69" width="320" height="2" fill="#7DE9FF" opacity=".85"/><rect x="0" y="71" width="320" height="1" fill="#3E8CFF" opacity=".5"/><rect x="6" y="72" width="2" height="28" fill="#18214F"/><rect x="46" y="72" width="2" height="28" fill="#18214F"/><rect x="86" y="72" width="2" height="28" fill="#18214F"/><rect x="126" y="72" width="2" height="28" fill="#18214F"/><rect x="166" y="72" width="2" height="28" fill="#18214F"/><rect x="206" y="72" width="2" height="28" fill="#18214F"/><rect x="246" y="72" width="2" height="28" fill="#18214F"/><rect x="286" y="72" width="2" height="28" fill="#18214F"/><g class="w-car"><rect x="0" y="62" width="26" height="6" fill="#FF8FB3"/><rect x="2" y="63" width="4" height="2" fill="#050816"/><rect x="8" y="63" width="4" height="2" fill="#050816"/><rect x="14" y="63" width="4" height="2" fill="#050816"/><rect x="20" y="63" width="4" height="2" fill="#050816"/><rect x="0" y="68" width="26" height="1" fill="#C3B4FF"/></g><g><rect x="-4" y="82" width="22" height="18" fill="#0a0e2e"/><rect x="-4" y="82" width="22" height="18" fill="url(#wwB)"/><rect x="-4" y="82" width="22" height="1" fill="#3E8CFF" opacity=".55"/><rect x="19" y="53" width="15" height="47" fill="#0a0e2e"/><rect x="19" y="53" width="15" height="47" fill="url(#wwA)"/><rect x="19" y="53" width="15" height="1" fill="#3E8CFF" opacity=".55"/><rect x="34" y="70" width="19" height="30" fill="#0a0e2e"/><rect x="34" y="70" width="19" height="30" fill="url(#wwB)"/><rect x="34" y="70" width="19" height="1" fill="#3E8CFF" opacity=".55"/><path d="M34,70 a9.5,9.5 0 0 1 19,0 z" fill="#1c2b86"/><rect x="42.5" y="56.5" width="2" height="4" fill="#7DE9FF"/><rect x="56" y="80" width="18" height="20" fill="#0a0e2e"/><rect x="56" y="80" width="18" height="20" fill="url(#wwA)"/><rect x="56" y="80" width="18" height="1" fill="#3E8CFF" opacity=".55"/><rect x="75" y="61" width="24" height="39" fill="#0a0e2e"/><rect x="75" y="61" width="24" height="39" fill="url(#wwB)"/><rect x="75" y="61" width="24" height="1" fill="#3E8CFF" opacity=".55"/><rect x="101" y="80" width="17" height="20" fill="#0a0e2e"/><rect x="101" y="80" width="17" height="20" fill="url(#wwA)"/><rect x="101" y="80" width="17" height="1" fill="#3E8CFF" opacity=".55"/><rect x="120" y="82" width="17" height="18" fill="#0a0e2e"/><rect x="120" y="82" width="17" height="18" fill="url(#wwB)"/><rect x="120" y="82" width="17" height="1" fill="#3E8CFF" opacity=".55"/><path d="M120,82 a8.5,8.5 0 0 1 17,0 z" fill="#1c2b86"/><rect x="127.5" y="69.5" width="2" height="4" fill="#7DE9FF"/><rect x="140" y="53" width="24" height="47" fill="#0a0e2e"/><rect x="140" y="53" width="24" height="47" fill="url(#wwA)"/><rect x="140" y="53" width="24" height="1" fill="#3E8CFF" opacity=".55"/><rect x="164" y="75" width="14" height="25" fill="#0a0e2e"/><rect x="164" y="75" width="14" height="25" fill="url(#wwB)"/><rect x="164" y="75" width="14" height="1" fill="#3E8CFF" opacity=".55"/><rect x="178" y="81" width="12" height="19" fill="#0a0e2e"/><rect x="178" y="81" width="12" height="19" fill="url(#wwA)"/><rect x="178" y="81" width="12" height="1" fill="#3E8CFF" opacity=".55"/><rect x="193" y="67" width="24" height="33" fill="#0a0e2e"/><rect x="193" y="67" width="24" height="33" fill="url(#wwB)"/><rect x="193" y="67" width="24" height="1" fill="#3E8CFF" opacity=".55"/><rect x="218" y="65" width="22" height="35" fill="#0a0e2e"/><rect x="218" y="65" width="22" height="35" fill="url(#wwA)"/><rect x="218" y="65" width="22" height="1" fill="#3E8CFF" opacity=".55"/><path d="M218,65 a11.0,11.0 0 0 1 22,0 z" fill="#1c2b86"/><rect x="228.0" y="50.0" width="2" height="4" fill="#7DE9FF"/><rect x="241" y="66" width="19" height="34" fill="#0a0e2e"/><rect x="241" y="66" width="19" height="34" fill="url(#wwB)"/><rect x="241" y="66" width="19" height="1" fill="#3E8CFF" opacity=".55"/><rect x="261" y="58" width="23" height="42" fill="#0a0e2e"/><rect x="261" y="58" width="23" height="42" fill="url(#wwA)"/><rect x="261" y="58" width="23" height="1" fill="#3E8CFF" opacity=".55"/><rect x="285" y="62" width="18" height="38" fill="#0a0e2e"/><rect x="285" y="62" width="18" height="38" fill="url(#wwB)"/><rect x="285" y="62" width="18" height="1" fill="#3E8CFF" opacity=".55"/><rect x="306" y="70" width="13" height="30" fill="#0a0e2e"/><rect x="306" y="70" width="13" height="30" fill="url(#wwA)"/><rect x="306" y="70" width="13" height="1" fill="#3E8CFF" opacity=".55"/></g></svg>
-            <div class="w-ground" aria-hidden="true"><i class="w-walker"></i></div>
-            <div class="w-glow" aria-hidden="true"></div>
-            <figure class="w-nixy"><img src="img/nixy.webp" alt="Nixy, Potara’s company avatar" width="520" height="690"></figure>
+            <video class="w-trailer" data-auto muted loop playsinline preload="none" poster="video/nixy-world-trailer.jpg" aria-label="Trailer of Nixy’s World: the haunted old town, the Ghost of the Past battle and the streets of Technicity"><source src="video/nixy-world-trailer.mp4" type="video/mp4"></video>
+            <div class="w-scrim" aria-hidden="true"></div>
+            <span class="w-rec" aria-hidden="true"><i></i>TRAILER · REAL GAMEPLAY</span>
             <div class="w-card">
               <span class="w-kick">Potara presents</span>
               <h3 class="w-title">Nixy’s <b>World</b></h3>
@@ -840,40 +932,12 @@ html.world-open,html.world-open body{overflow:hidden}
   </div>
 </section>
 
-<section class="habits" id="habits" data-chapter="Habits">
-  <div class="wrap">
-    <p class="eyebrow">Habits, rewritten</p>
-    <h2 class="h2">Old habits die hard. We help them along.</h2>
-    <p class="lede">Every service we offer starts as a habit somebody is tired of. Here are six we rewrite for a living.</p>
-    <div class="hab-grid">
-      <div class="hab-media">
-        <div class="frame">
-          <video id="teaser" data-auto muted loop playsinline preload="none" poster="video/hybrid-teaser-poster.jpg" aria-label="Teaser film: a hybrid meeting nobody can see, then Nixy arrives from the future"><source src="video/hybrid-teaser.mp4" type="video/mp4"></video>
-          <div class="frame-bar"><span>Exhibit A · the weekly sync</span><b>Rec</b></div>
-        </div>
-      </div>
-      <div class="hab-list">
-        <div class="habit" style="--c:var(--ice)"><div class="h-old"><span class="mono">Old habit</span><p><span>Ten minutes to start every meeting. Remote colleagues are faces on a laptop at the end of the table.</span></p></div><div class="h-new"><span class="mono">New habit · Meeting Room Studio</span><p>One tap to join. Everyone on the same wall, everyone heard, and the meeting starts on time.</p></div></div>
-        <div class="habit" style="--c:var(--mint)"><div class="h-old"><span class="mono">Old habit</span><p><span>Month-end means copying numbers between four systems and hoping nothing slips.</span></p></div><div class="h-new"><span class="mono">New habit · SI Academy</span><p>An agent drafts the reconciliation in your own tenant. People check it, sign it and go home.</p></div></div>
-        <div class="habit" style="--c:var(--lilac)"><div class="h-old"><span class="mono">Old habit</span><p><span>Hour-long webinars. A week later nobody remembers which button to press.</span></p></div><div class="h-new"><span class="mono">New habit · Training Studio</span><p>Six-minute videos with a task after each one, and a refresher a month later.</p></div></div>
-        <div class="habit" style="--c:var(--azure)"><div class="h-old"><span class="mono">Old habit</span><p><span>Every prospect gets the same deck. Demos depend on who is free that week.</span></p></div><div class="h-new"><span class="mono">New habit · Virtual Foreground</span><p>Your own avatar runs the first demo, at any hour, in your voice.</p></div></div>
-        <div class="habit" style="--c:var(--blush)"><div class="h-old"><span class="mono">Old habit</span><p><span>Customers log in once, look around and forget you.</span></p></div><div class="h-new"><span class="mono">New habit · The Arcade</span><p>Points, levels and a reason to come back on Monday.</p></div></div>
-        <div class="habit" style="--c:var(--peach)"><div class="h-old"><span class="mono">Old habit</span><p><span>Intervention is whoever is free, with whatever worksheet is in the cupboard.</span></p></div><div class="h-new"><span class="mono">New habit · Schoolhouse</span><p>A baseline, a designed sequence and a one-page report the governors actually read.</p></div></div>
-      </div>
-    </div>
-  </div>
-</section>
-
 <section class="approach" id="approach" data-chapter="Approach">
   <div class="wrap">
     <p class="eyebrow">Our approach</p>
     <h2 class="h2">We start with people, not technology.</h2>
     <p class="ap-quote" data-reveal>Most people don’t sit around saying, “Hmm, we really could use some more AI in this place.”</p>
     <p class="lede ap-lede" data-reveal>So we help clients create and shape their own future working habits. In practice, that means trying new ways of working before you commit to them, then speeding up the adoption of the ideas that stick.</p>
-    <div class="garden" id="garden">
-      <svg viewBox="0 0 1000 320" id="gardenSvg" role="img" aria-label="Fourteen seedlings sprout; most settle back down and three grow into glowing trees"></svg>
-      <div class="garden-cap"><h3>Try many. Keep what sticks.</h3><p>Pilots are cheap when they’re small. Most ideas should be allowed to settle back down. The few that work get our full attention.</p></div>
-    </div>
     <ol class="steps">
       <li data-reveal><h4>Listen</h4><p>We sit with your people and map the habits worth changing, before anyone mentions a tool.</p></li>
       <li data-reveal><h4>Try</h4><p>Pilots in weeks, not quarters, with real users on the licences you already pay for.</p></li>
@@ -884,54 +948,122 @@ html.world-open,html.world-open body{overflow:hidden}
   </div>
 </section>
 
-<section class="technicity" id="technicity" data-chapter="Technicity">
+<section class="d-head" id="services" data-chapter="Practices">
   <div class="wrap">
-    <div class="tc-grid">
-      <div>
-        <p class="eyebrow">The dream</p>
-        <h2 class="h2">Technical experts are out. Everyone has them.</h2>
-        <p class="tc-sub grad-text">We’re technicity experts.</p>
-        <div class="dict" id="dict" data-cameo="tech">
-          <div class="dict-head"><b data-scramble>technicity</b><span>/tɛkˈnɪsɪti/ · noun</span></div>
-          <ol>
-            <li data-scramble>The quality, function or effectiveness of a technology.</li>
-            <li data-scramble>The reliance on, and integration of, tools and systems in human society.</li>
-            <li>Potara Technicity: our virtual city. <a data-game href="play/">Walk around it with Nixy ↗</a></li>
-          </ol>
-        </div>
-      </div>
-      <div class="frame" data-reveal>
-        <video data-auto muted loop playsinline preload="none" poster="video/08-potara.jpg" aria-label="Pixel animation: Potara Technicity builds itself"><source src="video/08-potara.mp4" type="video/mp4"></video>
-        <div class="frame-bar"><span>Potara Technicity · building itself</span><span>From the founder story</span></div>
-      </div>
-    </div>
-    <div class="pillars">
-      <div class="pillar" data-reveal><h3>Technicity</h3><p>How people and technology shape each other, at work and in the classroom.</p></div>
-      <div class="pillar" data-reveal><h3>Taste</h3><p>Knowing which of the possible things is the right thing to build, and which to leave out.</p></div>
-      <div class="pillar" data-reveal><h3>Human enhancement</h3><p>Tools that make people more capable and never less needed. Synthetic Intelligence drives the real intelligence: you.</p></div>
-    </div>
-    <div class="dream" id="dream">
-      <p>A workplace where nobody does work a machine could do.</p>
-      <p>A classroom where the teacher has time to teach.</p>
-      <p class="grad-text">A team of five that feels like five hundred.</p>
-    </div>
+    <p class="eyebrow">Practices</p>
+    <h2 class="h2">Six practices. One team behind all of them.</h2>
+    <p class="lede">Each one starts with a person and a problem, and ends with something your team keeps.</p>
+    <nav class="d-index" aria-label="Practices">
+      <a href="#d-training" style="--c:var(--lilac)">Futurist Training Workshops</a><a href="#d-vf" style="--c:var(--azure)">Digital Presentation</a><a href="#d-school" style="--c:var(--peach)">Education Accelerator</a><a href="#d-arcade" style="--c:var(--blush)">The Arcade</a><a href="#d-si" style="--c:var(--mint)">SI Academy</a><a href="#rooms" style="--c:var(--ice)">Meeting Room Studio</a>
+    </nav>
   </div>
 </section>
 
-<section class="d-head" id="services" data-chapter="Services">
+<section class="districts" id="districts">
   <div class="wrap">
-    <p class="eyebrow">Services</p>
-    <h2 class="h2">Six districts. One team behind all of them.</h2>
-    <p class="lede">We work with customers at any stage of their digital transformation, from the first curious question to a platform that is already live.</p>
-    <nav class="d-index" aria-label="Districts">
-      <a href="#rooms" style="--c:var(--ice)">Meeting Room Studio</a><a href="#d-vf" style="--c:var(--azure)">Virtual Foreground</a><a href="#d-si" style="--c:var(--mint)">SI Academy</a><a href="#d-training" style="--c:var(--lilac)">Training Studio</a><a href="#d-school" style="--c:var(--peach)">Schoolhouse</a><a href="#d-arcade" style="--c:var(--blush)">The Arcade</a>
-    </nav>
+    <div class="d-grid">
+      <div class="d-sticky"><div class="d-frame" id="dFrame"><span class="d-label" id="dLabel">Futurist Training Workshops</span></div></div>
+      <div class="d-list">
+        <article class="district" id="d-training" data-d="training" style="--c:var(--lilac)">
+          <div class="d-inline"><div class="dm dm-train" data-media="training">
+            <div class="ql">
+              <div class="ql-head"><span>TRAINING QUEST</span><b>SALES TEAM</b></div>
+              <ol class="ql-steps">
+                <li><i class="ico" data-ico="deck"></i><div><b>Identify the bottleneck</b><span>Sam, buried in slides</span></div><em>✓</em></li>
+                <li><i class="ico" data-ico="bulb"></i><div><b>Dream up the solution</b><span>A plan for Sam’s role</span></div><em>✓</em></li>
+                <li><i class="ico" data-ico="clock"></i><div><b>2-hour workshop</b><span>Hands on, real decks</span></div><em>✓</em></li>
+                <li><i class="ico" data-ico="loop"></i><div><b>Follow up and tweak</b><span>Keep what works</span></div><em>✓</em></li>
+              </ol>
+              <div class="ql-bar"><i></i></div>
+            </div>
+          </div></div>
+          <span class="kicker">Practice 01 · Workshops</span>
+          <h3>Futurist Training Workshops</h3>
+          <p class="line">Custom workshops that teach a team new ways of working, built around one real job.</p>
+          <ol class="proc">
+            <li><b>Identify the bottleneck</b><span>Meet Sam in sales. Sam is working flat out, building every presentation from scratch.</span></li>
+            <li><b>Dream up the solution</b><span>Potara and Nixy design a custom training plan for Sam’s role, around the work Sam actually does.</span></li>
+            <li><b>Deliver the workshop</b><span>Two hours, hands on, using the team’s own presentations and tools.</span></li>
+            <li><b>Follow up and tweak</b><span>We check how well it’s working, then adjust the plan until it sticks.</span></li>
+          </ol>
+          <div class="d-proof"><div><b>Microsoft</b><span>Training and content delivered on their behalf in Europe and North America</span></div><div><b>QTS</b><span>Designed by a qualified teacher, not a slide reader</span></div></div>
+        </article>
+        <article class="district" id="d-vf" data-d="vf" data-cameo="vf" style="--c:var(--azure)">
+          <div class="d-inline"><div class="dm dm-vf" data-media="vf">
+            <img class="vf-nixy" src="img/nixy.webp" alt="Nixy, Potara’s company avatar">
+            <div class="cs">
+              <span class="cs-h">CHARACTER SHEET · NIXY</span>
+              <div class="cs-row"><span>Brand</span><b>Potara, Manchester. Wide-eyed optimists.</b></div>
+              <div class="cs-row"><span>Audience</span><b>Workplace leads, sales teams, teachers</b></div>
+              <div class="cs-row"><span>Look</span><b class="sw"><i style="--s:#3E8CFF"></i><i style="--s:#7DE9FF"></i><i style="--s:#EEF2FF"></i><i style="--s:#8C6CFF"></i>8-bit glow</b></div>
+              <div class="cs-row"><span>Personality</span><b>Curious, cheeky, helpful</b></div>
+            </div>
+          </div></div>
+          <span class="kicker">Practice 02 · Company avatars · Nixy</span>
+          <h3>Digital Presentation</h3>
+          <p class="line">A company avatar like Nixy, designed around your brand: on brand, on message, on call.</p>
+          <ol class="proc">
+            <li><b>Understand your brand and audience</b><span>Who you are, who you talk to, and how they like to be spoken to.</span><div class="chip8"><img src="img/nixy.webp" alt=""><p><span class="plate8">NIXY</span>I was made for workplace leads, sales teams and teachers. So I keep it plain and friendly.</p></div></li>
+            <li><b>Find your look</b><span>Aesthetic preferences: colours, culture, style, and the one detail that glows.</span><div class="chip8"><img src="img/nixy.webp" alt=""><p><span class="plate8">NIXY</span>Our founder is a big gamer, so I came with headphones, a visor and a soft spot for 8-bit.</p></div></li>
+            <li><b>Craft your digital personality</b><span>Voice, manners, and what your avatar will and won’t say.</span><div class="chip8"><img src="img/nixy.webp" alt=""><p><span class="plate8">NIXY</span>I’m cheeky, but I never talk over anyone. Professional was never meant to mean grey.</p></div></li>
+          </ol>
+          <div class="d-proof"><div><b>Nixy</b><span>You’re looking at one. Designed, voiced and deployed by Potara.</span></div></div>
+        </article>
+        <article class="district" id="d-school" data-d="school" style="--c:var(--peach)">
+          <div class="d-inline"><div class="dm dm-school" data-media="school">
+            <svg viewBox="0 0 420 260" role="img" aria-label="End-of-lesson attainment rose from 78% in lesson 1 to 93% in lesson 4">
+              <g stroke="rgba(160,180,255,.15)"><line x1="40" y1="220" x2="410" y2="220"/><line x1="40" y1="165" x2="410" y2="165"/><line x1="40" y1="110" x2="410" y2="110"/><line x1="40" y1="55" x2="410" y2="55"/></g>
+              <g text-anchor="end"><text x="32" y="224">0%</text><text x="32" y="114">50%</text><text x="32" y="59">75%</text></g>
+              <rect class="sbar" x="80" y="48.4" width="70" height="171.6" rx="6" fill="#6B76A0"/>
+              <rect class="sbar b2" x="300" y="15.4" width="70" height="204.6" rx="6" fill="#FFB199"/>
+              <text x="115" y="40" text-anchor="middle" style="font-size:18px;fill:#EEF2FF">78%</text>
+              <text x="335" y="8" text-anchor="middle" style="font-size:18px;fill:#EEF2FF">93%</text>
+              <path d="M160 120 Q230 60 292 40" fill="none" stroke="#FFB199" stroke-width="1.5" stroke-dasharray="4 5"/>
+              <g text-anchor="middle"><text x="115" y="244">Lesson 1</text><text x="335" y="244">Lesson 4</text><text x="225" y="140">each lesson planned from</text><text x="225" y="156">the last one’s exit tickets</text></g>
+            </svg>
+          </div></div>
+          <span class="kicker">Practice 03 · Schools, trusts and educational institutions</span>
+          <h3>Education Accelerator</h3>
+          <p class="line">Futurist training for staff, interventions for students, and digital tools that give teachers time back for the creative part.</p>
+          <dl><div><dt>For</dt><dd>Schools, trusts and educational institutions.</dd></div><div><dt>Staff</dt><dd>Futurist Training Workshops, shaped around school life.</dd></div><div><dt>Students</dt><dd>Interventions, each session planned from the last one’s data.</dd></div><div><dt>Teachers</dt><dd>Digital tools that take on lesson planning and lesson structure, so there’s more time to be creative.</dd></div></dl>
+          <div class="d-proof"><div><b>78→93%</b><span>End-of-lesson attainment across a four-lesson sequence in a Salford secondary</span></div></div>
+        </article>
+        <article class="district" id="d-arcade" data-d="arcade" style="--c:var(--blush)">
+          <div class="d-inline"><div class="dm dm-arcade" data-media="arcade">
+            <div class="ws" id="ws" aria-label="A game-style kit picker for a hybrid meeting room" role="img">
+              <div class="ws-top"><b>SELECT YOUR KIT</b><span>ROOM LV <em id="wsLv">1</em></span></div>
+              <div class="ws-xp"><i id="wsXp"></i></div>
+              <div class="ws-main">
+                <div class="ws-grid" id="wsGrid"></div>
+                <div class="ws-card"><div class="ws-big" id="wsBig"></div><b id="wsName"></b><p id="wsDesc"></p><div class="ws-stats" id="wsStats"></div></div>
+              </div>
+              <div class="ws-load"><span>LOADOUT</span><i></i><i></i></div>
+              <div class="ws-flash" id="wsFlash">SELECTED!</div>
+              <div class="ws-up" id="wsUp"><b>LEVEL UP!</b><span id="wsUpTxt">ROOM LV 2</span></div>
+            </div>
+          </div></div>
+          <span class="kicker">Practice 04 · Gamified platforms</span>
+          <h3>The Arcade</h3>
+          <p class="line">Gamified platforms that make customers and sales teams want to log in.</p>
+          <dl><div><dt>For</dt><dd>Sales organisations and customer success teams.</dd></div><div><dt>What we do</dt><dd>Points, levels, challenges and rewards, designed around the behaviour you actually want to see.</dd></div><div><dt>Example</dt><dd>Kitting out a hybrid meeting room, played as a character select screen.</dd></div></dl>
+          <div class="d-proof"><div><b>Nixy’s World</b><span>Our own pitch is a game. <a data-game href="play/" style="color:var(--blush)">Play it ↗</a></span></div></div>
+        </article>
+        <article class="district" id="d-si" data-d="si" style="--c:var(--mint)">
+          <div class="d-inline"><div class="dm" data-media="si"><video data-auto muted loop playsinline preload="none" poster="video/03-intelligence.jpg" aria-label="Pixel animation: a biological hand and a synthetic hand pass a ball of light"><source src="video/03-intelligence.mp4" type="video/mp4"></video></div></div>
+          <span class="kicker">Practice 05 · Synthetic Intelligence · GeekMoth</span>
+          <h3>SI Academy</h3>
+          <p class="line">AI agents and apps built into your real workflows, on the tools you already license.</p>
+          <dl><div><dt>For</dt><dd>Teams buried in repeat work: sales, marketing, technical, operations.</dd></div><div><dt>What we do</dt><dd>Study a workflow, find where an agent genuinely helps, build a pilot inside your tenant, test it and iterate.</dd></div><div><dt>Timing</dt><dd>Pilots in weeks, not quarters.</dd></div></dl>
+          <div class="d-proof"><div><b>35%</b><span>Less training time for new colleagues after a Power Platform onboarding portal</span></div><div><b>53→95%</b><span>Microsoft 365 adoption plan toward a 95% target</span></div></div>
+        </article>
+      </div>
+    </div>
   </div>
 </section>
 
 <section class="rooms-x" id="rooms" data-chapter="Meeting rooms">
   <div class="wrap rx-intro">
-    <span class="kicker">District 01 · Meeting Room Studio · Bob and Bill</span>
+    <span class="kicker">Practice 06 · Meeting Room Studio</span>
     <h2>Watch a room transform.</h2>
     <p class="lede">One meeting room, scrolled through all ten stages of a project: from the room everyone avoids to the room everyone books. Take it slowly.</p>
   </div>
@@ -971,97 +1103,6 @@ html.world-open,html.world-open body{overflow:hidden}
       <div><b>11,000</b><span>Staff hours a year returned, estimated, from our last hybrid meeting room programme.</span></div>
       <div><b>On time</b><span>And on budget, for a national utility company.</span></div>
     </div>
-  </div>
-</section>
-
-<section class="districts" id="districts">
-  <div class="wrap">
-    <div class="d-grid">
-      <div class="d-sticky"><div class="d-frame" id="dFrame"><span class="d-label" id="dLabel">Virtual Foreground</span></div></div>
-      <div class="d-list">
-        <article class="district" id="d-vf" data-d="vf" data-cameo="vf" style="--c:var(--azure)">
-          <div class="d-inline"><div class="dm dm-vf" data-media="vf">
-            <div class="vf-ring"><figure><img src="img/avatar-jeyoon.png" alt="Avatar concept: Seoul Signal"></figure><figure><img src="img/avatar-khulan.png" alt="Avatar concept: Steppe Falconer"></figure><figure><img src="img/avatar-meiling.png" alt="Avatar concept: Shanghai Jade"></figure><figure><img src="img/avatar-sanjar.png" alt="Avatar concept: Samarkand Silk"></figure></div>
-            <img class="vf-nixy" src="img/nixy.webp" alt="Nixy">
-          </div></div>
-          <span class="kicker">District 02 · Company avatars · Nixy</span>
-          <h3>Virtual Foreground</h3>
-          <p class="line">Custom company avatars like Nixy: on brand, on message, on call.</p>
-          <dl><div><dt>For</dt><dd>Sales, marketing and comms teams who want a face that scales.</dd></div><div><dt>You get</dt><dd>Your avatar, its style guide, and content: demos, onboarding, debriefs, updates.</dd></div><div><dt>Made to measure</dt><dd>Each one is designed with the person: their culture, their style, their personality. And one detail that glows.</dd></div></dl>
-          <div class="d-proof"><div><b>Nixy</b><span>You’re talking to one. Designed, voiced and deployed by Potara.</span></div></div>
-        </article>
-        <article class="district" id="d-si" data-d="si" style="--c:var(--mint)">
-          <div class="d-inline"><div class="dm" data-media="si"><video data-auto muted loop playsinline preload="none" poster="video/03-intelligence.jpg" aria-label="Pixel animation: a biological hand and a synthetic hand pass a ball of light"><source src="video/03-intelligence.mp4" type="video/mp4"></video></div></div>
-          <span class="kicker">District 03 · Synthetic Intelligence · GeekMoth</span>
-          <h3>SI Academy</h3>
-          <p class="line">AI agents and apps built into your real workflows, on the tools you already license.</p>
-          <dl><div><dt>For</dt><dd>Teams buried in repeat work: sales, marketing, technical, operations.</dd></div><div><dt>What we do</dt><dd>Study a workflow, find where an agent genuinely helps, build a pilot inside your tenant, test it and iterate.</dd></div><div><dt>Timing</dt><dd>Pilots in weeks, not quarters.</dd></div></dl>
-          <div class="d-proof"><div><b>35%</b><span>Less training time for new colleagues after a Power Platform onboarding portal</span></div><div><b>53→95%</b><span>Microsoft 365 adoption plan toward a 95% target</span></div></div>
-        </article>
-        <article class="district" id="d-training" data-d="training" style="--c:var(--lilac)">
-          <div class="d-inline"><div class="dm dm-train" data-media="training">
-            <div class="tr-row"><div class="tr-card"><span class="mono">Watch</span><b>6 minutes</b><div class="tr-bar"><i></i></div></div><div class="tr-card"><span class="mono">Practise</span><b>One task</b><div class="tr-bar"><i></i></div></div><div class="tr-card"><span class="mono">Review</span><b>A month later</b><div class="tr-bar"><i></i></div></div><p class="tr-note">Rosenshine: small steps, practice, review</p></div>
-          </div></div>
-          <span class="kicker">District 04 · Training videos and workshops · Coach</span>
-          <h3>Training Studio</h3>
-          <p class="line">Custom training videos and workshops, built on how people actually learn.</p>
-          <dl><div><dt>For</dt><dd>Anyone rolling out new tools or new ways of working.</dd></div><div><dt>You get</dt><dd>A video series in your brand, practice tasks, and a review schedule that makes it stick.</dd></div><div><dt>Timing</dt><dd>Scoped per programme, from a single workshop to a full series.</dd></div></dl>
-          <div class="d-proof"><div><b>£200k+</b><span>Training and content deals delivered on behalf of Microsoft</span></div><div><b>QTS</b><span>Designed by a qualified teacher, not a slide reader</span></div></div>
-        </article>
-        <article class="district" id="d-school" data-d="school" style="--c:var(--peach)">
-          <div class="d-inline"><div class="dm dm-school" data-media="school">
-            <svg viewBox="0 0 420 260" role="img" aria-label="End-of-lesson attainment rose from 78% in lesson 1 to 93% in lesson 4">
-              <g stroke="rgba(160,180,255,.15)"><line x1="40" y1="220" x2="410" y2="220"/><line x1="40" y1="165" x2="410" y2="165"/><line x1="40" y1="110" x2="410" y2="110"/><line x1="40" y1="55" x2="410" y2="55"/></g>
-              <g text-anchor="end"><text x="32" y="224">0%</text><text x="32" y="114">50%</text><text x="32" y="59">75%</text></g>
-              <rect class="sbar" x="80" y="48.4" width="70" height="171.6" rx="6" fill="#6B76A0"/>
-              <rect class="sbar b2" x="300" y="15.4" width="70" height="204.6" rx="6" fill="#FFB199"/>
-              <text x="115" y="40" text-anchor="middle" style="font-size:18px;fill:#EEF2FF">78%</text>
-              <text x="335" y="8" text-anchor="middle" style="font-size:18px;fill:#EEF2FF">93%</text>
-              <path d="M160 120 Q230 60 292 40" fill="none" stroke="#FFB199" stroke-width="1.5" stroke-dasharray="4 5"/>
-              <g text-anchor="middle"><text x="115" y="244">Lesson 1</text><text x="335" y="244">Lesson 4</text><text x="225" y="140">each lesson planned from</text><text x="225" y="156">the last one’s exit tickets</text></g>
-            </svg>
-          </div></div>
-          <span class="kicker">District 05 · Technology in education · Ms Chalk</span>
-          <h3>Schoolhouse</h3>
-          <p class="line">Maths interventions that move grades, and AI in schools done safely.</p>
-          <dl><div><dt>For</dt><dd>Heads of maths, school leaders and trust COOs.</dd></div><div><dt>What we do</dt><dd>Small-group maths interventions planned from each session’s data, and an AI Estate Audit against the DfE’s generative AI standards.</dd></div><div><dt>Timing</dt><dd>Twelve-week intervention blocks. Audits in two to three weeks.</dd></div></dl>
-          <div class="d-proof"><div><b>78→93%</b><span>End-of-lesson attainment across a four-lesson sequence in a Salford secondary</span></div></div>
-        </article>
-        <article class="district" id="d-arcade" data-d="arcade" style="--c:var(--blush)">
-          <div class="d-inline"><div class="dm dm-arcade" data-media="arcade">
-            <div class="ar-top"><b>Customer onboarding</b><span>Week 3</span></div>
-            <div class="ar-xp"><i></i></div>
-            <div class="ar-badges"><span>First login</span><span>Profile done</span><span>Team invited</span></div>
-            <div class="ar-up">LEVEL UP</div>
-          </div></div>
-          <span class="kicker">District 06 · Gamified platforms · The Arcade</span>
-          <h3>The Arcade</h3>
-          <p class="line">Gamified platforms that make customers and sales teams want to log in.</p>
-          <dl><div><dt>For</dt><dd>Sales organisations and customer success teams.</dd></div><div><dt>What we do</dt><dd>Points, levels, challenges and rewards, designed around the behaviour you actually want to see.</dd></div><div><dt>Timing</dt><dd>A working MVP in weeks.</dd></div></dl>
-          <div class="d-proof"><div><b>Nixy’s World</b><span>Our own pitch is a game. <a data-game href="play/" style="color:var(--blush)">Play it ↗</a></span></div></div>
-        </article>
-      </div>
-    </div>
-    <div class="infra" data-reveal>
-      <div><span class="eyebrow">The infrastructure</span><h3 style="margin-top:12px">Bob and Bill hold everything up.</h3><p>Twins, and the foundations under every project: platforms, security, devices and meeting rooms, so the clever parts have something solid to stand on.</p></div>
-      <div class="marq"><div class="marq-in"><span>Microsoft 365</span><span>Teams and Teams Rooms</span><span>Power Platform</span><span>Copilot</span><span>SharePoint</span><span>Intune</span><span>Google Workspace</span><span>Zoom Rooms</span><span>Microsoft 365</span><span>Teams and Teams Rooms</span><span>Power Platform</span><span>Copilot</span><span>SharePoint</span><span>Intune</span><span>Google Workspace</span><span>Zoom Rooms</span></div></div>
-    </div>
-  </div>
-</section>
-
-<section class="proof" id="proof" data-chapter="Proof">
-  <div class="wrap">
-    <p class="eyebrow">The proof so far</p>
-    <h2 class="h2">Eight years in enterprise. A year at the front of a classroom.</h2>
-    <div class="pf-grid">
-      <div class="pf"><b><span data-count="11000">11,000</span></b><span>Staff hours returned each year, estimated, from a hybrid meeting room programme delivered on time and on budget.</span></div>
-      <div class="pf"><b>78→93%</b><span>End-of-lesson attainment across a four-lesson maths sequence.</span></div>
-      <div class="pf"><b>£<span data-count="200">200</span>k+</b><span>Training and content deals delivered on behalf of Microsoft in Europe and North America.</span></div>
-      <div class="pf"><b><span data-count="35">35</span>%</b><span>Less training time for new colleagues after a Power Platform onboarding portal.</span></div>
-      <div class="pf"><b>53→95%</b><span>Microsoft 365 adoption plan, from 53% toward a 95% target.</span></div>
-      <div class="pf"><b>QTS</b><span>PGCE Secondary Mathematics, and a placement taught as the class teacher.</span></div>
-    </div>
-    <p class="mono pf-clients">Enterprise and public sector work for the European Central Bank · NatWest · BT</p>
   </div>
 </section>
 
@@ -1124,10 +1165,10 @@ html.world-open,html.world-open body{overflow:hidden}
 <footer>
   <div class="wrap">
     <div class="f-top">
-      <div class="f-say"><p>We’re wide-eyed optimists, building the future we’re so in love with.</p><p>We love sceptics as much as we love dreamers &lt;3</p></div>
+      <div class="f-say"><p>We’re wide-eyed <span class="eyes" role="img" aria-label="eyes">👀</span> optimists,</p><p class="f-by">Building the future we’re so in love with &lt;3</p></div>
       <div class="f-links">
-        <div><span class="mono">Potara</span><a href="#approach">Approach</a><a href="#technicity">Technicity</a><a href="#founder">Founder</a></div>
-        <div><span class="mono">Districts</span><a href="#rooms">Meeting Room Studio</a><a href="#d-vf">Virtual Foreground</a><a href="#d-si">SI Academy</a><a href="#d-training">Training Studio</a><a href="#d-school">Schoolhouse</a><a href="#d-arcade">The Arcade</a></div>
+        <div><span class="mono">Potara</span><a href="#approach">Approach</a><a href="#services">Practices</a><a href="#founder">Founder</a></div>
+        <div><span class="mono">Practices</span><a href="#d-training">Futurist Training Workshops</a><a href="#d-vf">Digital Presentation</a><a href="#d-school">Education Accelerator</a><a href="#d-arcade">The Arcade</a><a href="#d-si">SI Academy</a><a href="#rooms">Meeting Room Studio</a></div>
         <div><span class="mono">Elsewhere</span><a data-game href="play/">Nixy’s World ↗</a><a href="#contact">Book a call</a></div>
       </div>
     </div>
@@ -1638,58 +1679,6 @@ function tomUpdate(vh) {
   const r = tm.pin.getBoundingClientRect(), p = clamp(-r.top / Math.max(1, r.height - vh));
   tm.h = 9 + clamp(p / .94) * 8;
 }
-const habits = $$('.habit');
-
-/* =================== GARDEN =================== */
-const gsvg = $('#gardenSvg'), garden = $('#garden'), KEEP = { 3: 'Agent drafts, people decide', 7: 'Rooms that join up', 11: 'Six-minute training' };
-const seeds = [];
-const NS = 'http://www.w3.org/2000/svg';
-const mk = (t, a) => { const e = document.createElementNS(NS, t); for (const k in a) e.setAttribute(k, a[k]); return e; };
-(() => {
-  gsvg.appendChild(mk('line', { x1: 0, y1: 270, x2: 1000, y2: 270, stroke: 'rgba(160,180,255,.3)', 'stroke-width': 1.5 }));
-  const defs = mk('defs', {}); const rg = mk('radialGradient', { id: 'canopy' });
-  rg.appendChild(mk('stop', { offset: 0, 'stop-color': '#EEF2FF', 'stop-opacity': .95 })); rg.appendChild(mk('stop', { offset: .45, 'stop-color': '#7DE9FF', 'stop-opacity': .7 })); rg.appendChild(mk('stop', { offset: 1, 'stop-color': '#3E8CFF', 'stop-opacity': 0 }));
-  defs.appendChild(rg); gsvg.appendChild(defs);
-  for (let i = 0; i < 14; i++) {
-    const x = 50 + i * 69, g = mk('g', {});
-    const glow = mk('circle', { cx: x, cy: 120, r: 0, fill: 'url(#canopy)' });
-    const stem = mk('path', { d: `M${x} 270 L${x} 270`, stroke: '#5EF0C0', 'stroke-width': 2.5, fill: 'none', 'stroke-linecap': 'round' });
-    const l1 = mk('ellipse', { cx: x - 7, cy: 262, rx: 0, ry: 0, fill: '#5EF0C0' });
-    const l2 = mk('ellipse', { cx: x + 7, cy: 262, rx: 0, ry: 0, fill: '#5EF0C0' });
-    g.append(glow, stem, l1, l2);
-    let label = null;
-    if (KEEP[i]) { label = mk('text', { x, y: 300, 'text-anchor': 'middle', class: 'gl', opacity: 0 }); label.textContent = KEEP[i]; g.appendChild(label); }
-    gsvg.appendChild(g);
-    seeds.push({ x, keep: !!KEEP[i], glow, stem, l1, l2, label, j: rng() });
-  }
-})();
-function gardenUpdate(vh) {
-  const r = garden.getBoundingClientRect();
-  if (r.bottom < -200 || r.top > vh + 200) return;
-  const p = RM ? 1 : clamp((vh * .9 - r.top) / (vh * .75 + r.height * .3));
-  for (const s of seeds) {
-    const sprout = smooth(.02 + s.j * .12, .3 + s.j * .1, p);
-    let h = 34 * sprout;
-    if (!s.keep) h *= 1 - .8 * smooth(.42 + s.j * .1, .62 + s.j * .1, p);
-    else h += 120 * ease(smooth(.5, .85, p));
-    const top = 270 - h, lr = (s.keep ? 9 + 6 * smooth(.5, .85, p) : 8) * Math.min(1, h / 20);
-    s.stem.setAttribute('d', `M${s.x} 270 Q${s.x + 4} ${270 - h / 2} ${s.x} ${top}`);
-    s.stem.setAttribute('opacity', s.keep ? 1 : .45 + .55 * (h / 34));
-    s.l1.setAttribute('cy', top + 8); s.l2.setAttribute('cy', top + 8);
-    s.l1.setAttribute('transform', `rotate(-35 ${s.x - 7} ${top + 8})`); s.l2.setAttribute('transform', `rotate(35 ${s.x + 7} ${top + 8})`);
-    s.l1.setAttribute('rx', lr); s.l1.setAttribute('ry', lr * .45); s.l2.setAttribute('rx', lr); s.l2.setAttribute('ry', lr * .45);
-    if (s.keep) { const c = ease(smooth(.62, .95, p)); s.glow.setAttribute('cy', top + 4); s.glow.setAttribute('r', 58 * c); if (s.label) s.label.setAttribute('opacity', smooth(.8, .95, p)); }
-  }
-}
-
-/* =================== DICTIONARY scramble =================== */
-function scramble(el) {
-  const final = el.textContent, glyph = 'abcdefghijklmnopqrstuvwxyz░▒▓/<>'; let k = 0;
-  const step = () => { k += Math.max(1, final.length / 28); el.textContent = final.split('').map((c, i) => i < k || c === ' ' ? c : glyph[(Math.random() * glyph.length) | 0]).join(''); if (k < final.length) requestAnimationFrame(step); else el.textContent = final; };
-  step();
-}
-if (!RM) { const dio = new IntersectionObserver(es => { if (es[0].isIntersecting) { $$('[data-scramble]').forEach((el, i) => setTimeout(() => scramble(el), i * 250)); dio.disconnect(); } }, { threshold: .5 }); dio.observe($('#dict')); }
-const dreamLines = $$('#dream p');
 
 /* =================== MEETING ROOM TRANSFORMATION =================== */
 /* Isometric room. x runs along the back-right wall (0..12), y along the back-left wall (0..8), z is height. 1 unit = 0.75 m. */
@@ -1864,10 +1853,10 @@ function buildRoom() {
 const rx = { svg: $('#rxSvg'), pin: $('#rxPin'), sec: $('#rooms'), scene: $('#rxScene'), els: [], draws: [], p: -1, stage: -1 };
 const RX_STAGES = [
   ['Legacy room', 'The room everyone avoids. Ten minutes to start, a laptop at the end of the table, a TV on a trolley and a helpdesk ticket a day.'],
-  ['Site survey', 'Bill asks the questions. We measure the room, the echo, the light and who actually uses it.'],
+  ['Site survey', 'We ask the questions. We measure the room, the echo, the light and who actually uses it.'],
   ['Design', 'A design pack and kit list for this room: screens sized for the farthest seat, a microphone zone for every seat.'],
   ['Cabling', 'The spaghetti goes. One connectivity box on the table, Cat6A to every device, everything labelled.'],
-  ['Install · displays', 'Bob builds. Two 75-inch displays go up where the trolley used to be, sized for the farthest seat.'],
+  ['Install · displays', 'Two 75-inch displays go up where the trolley used to be, sized for the farthest seat.'],
   ['Install · audio and camera', 'Ceiling microphones with a zone per seat, and one camera that frames whoever is speaking.'],
   ['Install · light and acoustics', 'Acoustic panels bring the echo down. Diffused 4000 K light puts every face in good light.'],
   ['Testing', 'Every seat tested from the far end. If a remote colleague can’t hear seat nine, we fix it before go-live.'],
@@ -1940,7 +1929,96 @@ function roomUpdate(vh) {
 
 /* =================== OTHER DISTRICTS =================== */
 const dFrame = $('#dFrame'), dLabel = $('#dLabel'), districts = $$('.district');
-const DNAME = { rooms: 'Meeting Room Studio', vf: 'Virtual Foreground', si: 'SI Academy', training: 'Training Studio', school: 'Schoolhouse', arcade: 'The Arcade' };
+const DNAME = { rooms: 'Meeting Room Studio', vf: 'Digital Presentation', si: 'SI Academy', training: 'Futurist Training Workshops', school: 'Education Accelerator', arcade: 'The Arcade' };
+/* =================== PRACTICE VISUALS =================== */
+const ICO_C = { W: '#EEF2FF', K: '#050816', C: '#7DE9FF', A: '#3E8CFF', V: '#8C6CFF', B: '#FF8FB3', G: '#5EF0C0', Y: '#FFD166', L: '#C3B4FF' };
+const ICONS = {
+  deck: ['............', '..WWWWWWWW..', '..WKKKKKKW..', 'WWWWWWWWKW..', 'WKKKKKKWKW..', 'WKLLLKKWKW..', 'WKKKKKKWWW..', 'WKLLKLLW....', 'WKKKKKKW....', 'WWWWWWWW....', '...B..B.....', '..B....B....'],
+  bulb: ['.....Y......', '.Y...Y...Y..', '..Y.....Y...', '....WWW.....', '...WYYYW....', '..WYYWYYW...', '..WYYWYYW...', '..WYYYYYW...', '...WYYYW....', '....WWW.....', '....LLL.....', '.....L......'],
+  clock: ['...WWWWWW...', '..WKKKKKKW..', '.WKKKWKKKKW.', 'WKKKKWKKKKKW', 'WKKKKWKKKKKW', 'WKKKKWWWWKKW', 'WKKKKKKKKKKW', 'WKKKKKKKKKKW', '.WKKKKKKKKW.', '..WKKKKKKW..', '...WWWWWW...', '............'],
+  loop: ['....GGGG....', '..GG....GG..', '.G........G.', '.G.......GGG', 'G.........G.', 'G...........', '...........G', '.G.........G', 'GGG.......G.', '.G........G.', '..GG....GG..', '....GGGG....'],
+  display: ['............', 'WWWWWWWWWWWW', 'WAAAAAAAAAAW', 'WACCAAAAAAAW', 'WAACCAAAAAAW', 'WAAACCAAAAAW', 'WAAAAACCAAAW', 'WAAAAAAAAAAW', 'WWWWWWWWWWWW', '.....WW.....', '...WWWWWW...', '............'],
+  bar: ['............', '............', '............', 'WWWWWWWWWWWW', 'WKVKKCCKKVKW', 'WKVKCKKCKVKW', 'WKVKKCCKKVKW', 'WWWWWWWWWWWW', '.....WW.....', '.....WW.....', '............', '............'],
+  mics: ['.....WW.....', '.....WW.....', '..WWWWWWWW..', '.WKKKKKKKKW.', 'WKCKKCCKKCKW', 'WKKKKKKKKKKW', 'WKCKKCCKKCKW', '.WKKKKKKKKW.', '..WWWWWWWW..', '..C......C..', '.C...CC...C.', 'C....CC....C'],
+  touch: ['..WWWWWWWW..', '..WKKKKKKW..', '..WKGGGGKW..', '..WKGKKGKW..', '..WKGGGGKW..', '..WKKKKKKW..', '..WKKBBKKW..', '..WKKKKKKW..', '..WWWWWWWW..', '...W....W...', '..WWWWWWWW..', '............'],
+  door: ['..WWWWWWWW..', '..WGGGGGGW..', '..WKKKKKKW..', '..WKWWWWKW..', '..WKKKKKKW..', '..WKWWKKKW..', '..WKKKKKKW..', '..WKWWWKKW..', '..WKKKKKKW..', '..WWWWWWWW..', '............', '............'],
+  panels: ['WWW.WWW.WWW.', 'WVW.WLW.WVW.', 'WVW.WLW.WVW.', 'WVW.WLW.WVW.', 'WVW.WLW.WVW.', 'WVW.WLW.WVW.', 'WVW.WLW.WVW.', 'WVW.WLW.WVW.', 'WWW.WWW.WWW.', '............', '.C..C..C..C.', 'C..C..C..C..'],
+  light: ['.....WW.....', '.....WW.....', '...WWWWWW...', '..WYYYYYYW..', '.WYYYYYYYYW.', '.WWWWWWWWWW.', '............', '..Y..Y..Y...', '.Y...Y...Y..', 'Y....Y....Y.', '............', '............'],
+  box: ['............', '............', '.WWWWWWWWWW.', '.WKKKKKKKKW.', '.WKCKBKGKKW.', '.WKKKKKKKKW.', '.WWWWWWWWWW.', '.....AA.....', '.....AA.....', '.....AA.....', '....AAAA....', '............'],
+};
+const icon = k => pix(ICONS[k], ICO_C);
+$$('[data-ico]').forEach(el => { el.innerHTML = icon(el.dataset.ico); });
+/* run an animation step on a timer, only while its element is on screen */
+function cycler(el, ms, fn) {
+  if (!el) return; fn();
+  if (RM) return;
+  let t = null;
+  new IntersectionObserver(es => { const v = es[0].isIntersecting; if (v && !t) t = setInterval(fn, ms); else if (!v && t) { clearInterval(t); t = null; } }, { threshold: .15 }).observe(el);
+}
+/* Futurist Training Workshops: the quest log ticks through the four steps */
+(() => {
+  const ql = $('.ql'); if (!ql) return;
+  const items = $$('.ql-steps li', ql), bar = $('.ql-bar i', ql); let i = RM ? 4 : -1;
+  cycler(ql, 1900, () => {
+    i = RM ? 4 : (i + 1) % 6;
+    const k = Math.min(i, 4);
+    items.forEach((li, n) => { li.classList.toggle('done', n < k); li.classList.toggle('on', n === k); });
+    bar.style.width = (k / 4 * 100) + '%';
+  });
+})();
+/* Digital Presentation: the character sheet fills in, row by row */
+(() => {
+  const cs = $('.cs'); if (!cs) return;
+  const rows = $$('.cs-row', cs); let i = -1;
+  cycler(cs, 1700, () => { i = (i + 1) % rows.length; rows.forEach((r, n) => r.classList.toggle('on', RM || n === i)); });
+})();
+/* The Arcade: a character select screen for a hybrid meeting room */
+(() => {
+  const ws = $('#ws'); if (!ws) return;
+  const ITEMS = [
+    { k: 'display', n: '86-inch display', d: 'Content big enough for the back row.', s: [90, 60, 70] },
+    { k: 'bar', n: 'Video bar', d: 'Camera, mics and speaker in one.', s: [75, 80, 90] },
+    { k: 'mics', n: 'Ceiling mics', d: 'Every seat heard at the far end.', s: [85, 95, 80] },
+    { k: 'touch', n: 'Touch panel', d: 'One tap to join the call.', s: [60, 70, 100] },
+    { k: 'door', n: 'Room panel', d: 'Book the room at the door.', s: [50, 65, 95] },
+    { k: 'panels', n: 'Acoustic panels', d: 'Echo out, voices in.', s: [95, 70, 60] },
+    { k: 'light', n: 'Face lighting', d: 'Light on faces, not on the screen.', s: [80, 60, 75] },
+    { k: 'box', n: 'Table box', d: 'One cable, one box, no hunting.', s: [55, 60, 95] },
+  ];
+  const STATS = ['CLARITY', 'REACH', 'EASE'];
+  const grid = $('#wsGrid'), big = $('#wsBig'), name = $('#wsName'), desc = $('#wsDesc'), stats = $('#wsStats');
+  const xp = $('#wsXp'), lvEl = $('#wsLv'), flash = $('#wsFlash'), up = $('#wsUp'), upTxt = $('#wsUpTxt'), slots = $$('.ws-load i', ws);
+  grid.innerHTML = ITEMS.map(it => `<div class="ws-t">${icon(it.k)}</div>`).join('');
+  stats.innerHTML = STATS.map(s => `<div class="ws-stat"><span>${s}</span><i></i></div>`).join('');
+  const tiles = $$('.ws-t', grid), bars = $$('.ws-stat i', stats);
+  let cur = 0, picks = [], lv = 1, moves = 0, busy = false;
+  const show = i => {
+    cur = i; tiles.forEach((t, n) => t.classList.toggle('cur', n === i));
+    const it = ITEMS[i]; big.innerHTML = icon(it.k); name.textContent = it.n; desc.textContent = it.d;
+    bars.forEach((b, n) => b.style.setProperty('--v', it.s[n] + '%'));
+  };
+  async function select() {
+    busy = true; const t = tiles[cur]; picks.push(cur);
+    t.classList.remove('pick'); void t.offsetWidth; t.classList.add('pick', 'got');
+    flash.classList.add('on'); slots[picks.length - 1].innerHTML = icon(ITEMS[cur].k); slots[picks.length - 1].classList.add('full');
+    xp.style.width = (picks.length / 2 * 100) + '%';
+    await sleep(1200); flash.classList.remove('on');
+    if (picks.length >= 2) {
+      await sleep(350); lv++; upTxt.textContent = 'ROOM LV ' + lv; up.classList.add('on'); lvEl.textContent = lv;
+      await sleep(2200); up.classList.remove('on');
+      picks = []; tiles.forEach(x => x.classList.remove('got', 'pick')); slots.forEach(s => { s.innerHTML = ''; s.classList.remove('full'); }); xp.style.width = '0%';
+    }
+    busy = false;
+  }
+  show(0);
+  cycler(ws, 800, () => {
+    if (busy || moves++ === 0) return;
+    if (moves % 4 === 0) { select(); return; }
+    let n; do n = (Math.random() * ITEMS.length) | 0; while (n === cur || picks.includes(n));
+    show(n);
+  });
+})();
+
 let mediaHome = 'inline', curD = '';
 function placeMedia() {
   const want = desktop() ? 'sticky' : 'inline';
@@ -2147,8 +2225,7 @@ addEventListener('keydown', e => { if (e.key === 'Escape') closeCameo(); });
 
 const SCRIPTS = {
   async intro(ctx) {
-    if (ctx === 'film') await say('That’s me! I was so nervous...', 'sweat', 'nervous', { wait: 3200 });
-    else await say('That was me in the film back there! I was so nervous...', 'sweat', 'nervous', { wait: 3400 });
+    await say('Hi again! It’s me, Nixy.', 'hi', 'happy', { wait: 2400 });
     await say('I can chip in with some useful tidbits as you scroll.', 'sparkle', 'happy', { hold: true });
     const v = await choose([{ t: 'Sounds good', v: 'ok' }, { t: 'Ok, leave me alone', v: 'mute', alt: true }], 22000, 'quiet');
     if (v === 'quiet') return;
@@ -2179,7 +2256,7 @@ const SCRIPTS = {
     await say('What are you wrestling with?', 'think', '', { hold: true });
     lead.challenge = await choose([
       { t: 'Meeting rooms', v: 'rooms' }, { t: 'AI doing real work', v: 'si' }, { t: 'Training that sticks', v: 'training' },
-      { t: 'A face that scales', v: 'vf' }, { t: 'Engagement', v: 'arcade' }, { t: 'A school or trust', v: 'school' }]);
+      { t: 'A company avatar', v: 'vf' }, { t: 'Engagement', v: 'arcade' }, { t: 'A school or trust', v: 'school' }]);
     await say('Can we send you a newsletter?', 'q', '', { hold: true });
     lead.newsletter = (await choose([{ t: 'Yes please', v: true }, { t: 'No thanks', v: false, alt: true }]));
     store.set('potara.nixy.ask', 'done');
@@ -2228,16 +2305,11 @@ setInterval(() => {
   tryRun();
 }, 1000);
 if (store.get('potara.nixy.quiet')) N.muted = true;
-/* the intro: when Nixy first appears in the teaser */
-const teaser = $('#teaser'), habSec = $('#habits');
-let habSeenAt = 0;
-teaser.addEventListener('timeupdate', () => { if (!N.seen.has('intro') && teaser.currentTime >= CONFIG.NIXY_IN_FILM_AT) setTimeout(() => trigger('intro', 'film'), 900); });
-new IntersectionObserver(es => { habSeenAt = es[0].isIntersecting ? (habSeenAt || performance.now()) : 0; }, { threshold: .35 }).observe($('.hab-media'));
+/* the intro: once the visitor has met Tom */
+const tomSec = $('#monday');
 setInterval(() => {
   if (N.seen.has('intro') || N.pending) return;
-  const blocked = teaser.paused || teaser.readyState < 2;
-  if (habSeenAt && blocked && performance.now() - habSeenAt > 6000) trigger('intro', 'film');
-  if (habSec.getBoundingClientRect().bottom < 0) trigger('intro', 'late');
+  if (tomSec.getBoundingClientRect().bottom < innerHeight * .45) trigger('intro', 'late');
 }, 1000);
 /* other moments */
 const cio2 = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) trigger(e.target.dataset.cameo); }), { rootMargin: '-38% 0px -38% 0px' });
@@ -2257,9 +2329,7 @@ function update() {
   nav.classList.toggle('solid', y > 30);
   const max = root.scrollHeight - vh, pg = max > 0 ? clamp(y / max) : 0;
   navProg.style.transform = `scaleX(${pg})`;
-  heroUpdate(vh); stillUpdate(vh); tomUpdate(vh); gardenUpdate(vh); roomUpdate(vh); districtsUpdate(vh); journeyUpdate(vh); ringUpdate(vh);
-  habits.forEach(h => { if (!h.classList.contains('flip') && h.getBoundingClientRect().top < vh * .62) h.classList.add('flip'); });
-  if (!RM) { const dr = $('#dream').getBoundingClientRect(); const dp = clamp((vh * .85 - dr.top) / (vh * .5)); dreamLines.forEach((l, i) => l.style.setProperty('--o', (.15 + .85 * clamp(dp * 3 - i)).toFixed(3))); }
+  heroUpdate(vh); stillUpdate(vh); tomUpdate(vh); roomUpdate(vh); districtsUpdate(vh); journeyUpdate(vh); ringUpdate(vh);
   let cur = chapters[0]; for (const c of chapters) if (c.getBoundingClientRect().top <= vh * .5) cur = c;
   if (cur.id !== curCh) { curCh = cur.id; navLinks.forEach(a => a.classList.toggle('on', a.dataset.nav === cur.id || (a.dataset.nav === 'services' && ['rooms', 'services'].includes(cur.id)))); }
   maybeRelocate();

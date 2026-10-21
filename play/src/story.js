@@ -7,6 +7,7 @@ import { S, FRAGMENTS, READING_LIST } from '../data/script.js';
 import { QUESTIONS } from '../data/consult.js';
 import { say, choose, askInput, closeDialogue, setExitable, DialogueExit, ui, uiOpts, hud, showCard, quip, openMenu, menuOpen, closeMenu } from './ui.js';
 import { baitSwitch, encounterScene, swirl, founderScene, roomPanel, avatarStudio, submitLead } from './scenes.js';
+import { ghostScene, ghostBattle } from './ghost.js';
 import { audio } from './audio.js';
 import { video } from './video.js';
 import { createFilm } from './film.js';
@@ -37,7 +38,7 @@ class WorldScene {
   constructor(world, h) { this.w = world; this.h = h; this.walkId = 0; }
   enter() { this.offs = [on('point', p => this.point(p)), on('act', () => this.act()), on('arrive', a => this.h.arrive?.(a.x, a.y))]; }
   exit() { this.offs.forEach(f => f()); clearOverlayTags(); }
-  update(dt) { this.w.camBias += ((ui.open ? 34 : 0) - this.w.camBias) * Math.min(1, dt / 160); this.w.update(dt); }
+  update(dt) { this.w.camBias += ((ui.open ? 34 : 0) - this.w.camBias) * Math.min(1, dt / 160); this.w.update(dt); this.h.tick?.(dt); }
   render(g) { this.w.render(g, this.w.greyNixy); }
   renderHD(g, k) { hdWorld(g, this.w, k); updateTags(this.w, { recommended: G.challenge, visited: G.visited }); updateBubbles(this.w); }
   renderTop(g) { if (this.w.greyNixy) this.w.renderNixy(g); }
@@ -120,6 +121,7 @@ export async function boot() {
   $('#hudMenu').addEventListener('click', () => openMenu({ places: save.get('stage') === 'free' && G.scene === 'town' ? places() : null }));
   $('#hudDossier').addEventListener('click', () => openServices());
   on('esc', () => { if (menuOpen()) closeMenu(); });
+  on('thunder', () => audio.sfx('thunder'));
   const title = $('#title'); title.hidden = false;
   const stage = save.get('stage'), progress = stage === 'free' || stage === 'town';
   $('#tContinue').hidden = !progress;
@@ -203,20 +205,23 @@ function buildTown() {
   const m = town(); const w = new World(m); G.town = w; return w;
 }
 async function townArrival() {
-  G.scene = 'town'; audio.music('town');
+  G.scene = 'town'; audio.music('haunt');
   const w = buildTown(); G.world = w; const m = w.map;
   makePlayer(w, m.start.x, m.start.y, 3); const n = makeNixy(w, m.start.x + 2, m.start.y, 'lead');
   w.greyNixy = true; fx.sat = 0; placeCityNpcs(w);
+  if (save.get('ghostBeaten')) placeYasin(w);
   const sc = townScene(w); setScene(sc); lock(true);
   await fadeIn(500);
   await tween(1800, k => fx.sat = .45 * k); w.greyNixy = false;
-  // the encounter can fire whenever the visitor steps into the tall grass
-  G.encounterP = new Promise(r => G.onGrass = r);
+  // the Ghost of the Past waits at the edge of the old town; Technicity begins at the tall grass
+  G.leftOld = false; G.ghostP = new Promise(r => G.onLeaveOld = r); G.cityP = new Promise(r => G.onCity = r);
   await talk(S.firstSight); lock(false);
   runRoute(w);
-  await G.encounterP;
+  await G.ghostP;
+  if (!save.get('ghostBeaten')) await ghostAct();
+  await G.cityP;
   G.routeDone = true;
-  return encounterAct();
+  return cityAct();
 }
 async function runRoute(w) {
   const n = w.nixy, m = w.map;
@@ -226,8 +231,10 @@ async function runRoute(w) {
     await w.walkTo(n, ...stop.to);
     if (G.routeDone) break;
     const f = FRAGMENTS[stop.stop];
+    while (G.scene !== 'town' || G.world?.locked) await wait(300); // hold hints until the battle (and its aftermath) is over
+    if (G.routeDone) break;
     if (f) { n.dir = 3; w.bubble(n, G.fragments.has(stop.stop) ? 'FOUND THIS ONE!' : 'PSST. POKE IT!', 2600); if (!G.fragments.has(stop.stop)) quip(f.clue, 3800); }
-    else if (stop.stop === 'meadow') { w.bubble(n, 'THROUGH THE GRASS!', 4000); quip('Walk through the tall grass. Watch your step...', 4000); }
+    else if (stop.stop === 'meadow') { w.bubble(n, 'THROUGH THE GRASS!', 4000); quip('Technicity is just past the tall grass!', 4000); }
     // wait for the visitor to catch up (or give up after a while)
     const t0 = clock.t; while (!G.routeDone && clock.t - t0 < 9000) { const pl = w.player; if (Math.abs(pl.x - n.x) + Math.abs(pl.y - n.y) <= 3 && clock.t - t0 > 1600) break; await wait(200); }
     if (stop.stop !== 'meadow') { await wait(500); if (!G.routeDone && qi < 3 && Math.random() < .6) w.bubble(n, S.quips[[0, 2, 3][qi++]], 1600); }
@@ -238,9 +245,11 @@ function townScene(w) {
   const m = w.map;
   return new WorldScene(w, {
     talk: e => { if (e.id === 'yasin') founderAct(); else if (e.npcLines) npcTalk(e); },
+    tick: () => { if (G.scene === 'town' && G.world === w && w.player && !founderBusy) audio.music(w.player.x < 21 ? 'haunt' : 'town'); },
     prop: p => { if (p.act === 'pad') finaleAct(); else if (FRAGMENTS[p.act] || p.act === 'logo') { lock(true); propAct(p).finally(() => lock(false)); } },
     arrive: (x, y) => {
-      if (!G.met && m.get(x, y) === TL.TALL) { G.met = true; G.onGrass?.(); return; }
+      if (!G.leftOld && !G.met && x >= 18 && save.get('stage') === 'town') { G.leftOld = true; G.onLeaveOld?.(); return; }
+      if (G.leftOld && !G.met && (m.get(x, y) === TL.TALL || x >= 24)) { G.met = true; G.onCity?.(); return; }
       if (save.get('stage') === 'free') { if (clock.t - (G.lastSave || 0) > 1500) { G.lastSave = clock.t; save.set('pos', [x, y]); } refreshGuide(); }
       const b = m.buildings.find(b => b.door[0] === x && b.door[1] === y);
       if (b && b.style === 'old') { lock(true); quip(b.id === 'old' ? 'That way lies the grey. Onwards!' : ['Closed since 1998.', 'Out to lunch. Since 2003.', 'The sign says back in five minutes.'][b.x % 3]); w.walkTo(w.player, x, y + 1).then(() => lock(false)); return; }
@@ -256,23 +265,29 @@ function townScene(w) {
 // =====================================================================
 // G–H. TALL GRASS ENCOUNTER, YASIN'S SHORT PITCH, NIXY'S ASK
 // =====================================================================
-async function encounterAct() {
-  const w = G.world; lock(true); track('encounter');
+// The first battle: leaving the old town, against the Ghost of the Past. Empathy turns it back into Yasin.
+async function ghostAct() {
+  const w = G.world; lock(true); track('ghost_battle'); G.scene = 'battle'; $('#toast').hidden = true; document.body.classList.add('battle');
   await swirl();
-  G.scene = 'battle'; audio.music('battle');
-  setScene(encounterScene(G.look)); await fadeIn(250);
-  await say(S.encounter);
+  audio.music('boss'); const satWas = fx.sat; fx.sat = 1; // the battle is in full colour, whatever the town looks like
+  const sc = ghostScene(G.look); G.battle = sc; setScene(sc); await fadeIn(250);
+  await ghostBattle(sc);
   const h = await choose(S.handsChoice);
   await say(h === 'yes' ? S.handsYes : S.handsNo);
   await say(S.shortPitch); closeDialogue();
+  save.set('ghostBeaten', true); track('ghost_beaten');
   await swirl();
-  // back to the town: Yasin now sits on the bench, and stays there for good
+  // back to the edge of the woods; Yasin goes ahead to his bench in Technicity, and stays there for good
   placeYasin(w);
+  document.body.classList.remove('battle'); fx.sat = satWas; G.scene = 'town'; audio.music('haunt'); setScene(townScene(w)); fx.fade = 1; await fadeIn(400);
+  await talk(S.ghostAfter); lock(false);
+}
+async function cityAct() {
+  const w = G.world; lock(true); track('encounter');
   const n = w.nixy; n.mode = 'idle'; n.path = []; const pl = w.player;
   const spot = [[pl.x - 1, pl.y], [pl.x + 1, pl.y], [pl.x, pl.y + 1], [pl.x, pl.y - 1]].find(([x, y]) => w.passable(x, y, n)) || [pl.x, pl.y];
   n.x = spot[0]; n.y = spot[1]; n.px = n.x * T; n.py = n.y * T; w.face(n, pl);
-  G.scene = 'town'; audio.music('town'); setScene(townScene(w)); fx.fade = 1; fx.sat = .45; await fadeIn(400);
-  save.set('met', true);
+  audio.music('town'); save.set('met', true);
   audio.sfx('win'); await tween(1600, k => fx.sat = .45 + .55 * k); await talk(S.citySight);
   await askAct();
   // unlock the secret projects
@@ -280,6 +295,7 @@ async function encounterAct() {
   await talk(S.askDone);
   n.mode = 'follow'; save.set('stage', 'free'); save.set('pos', [pl.x, pl.y]); updateHud(); $('#hudDossier').hidden = false;
   await funnel(); lock(false);
+  if (matchMedia('(pointer:coarse)').matches) quip('Tap the ground to walk. Tap a person to talk.', 5000);
 }
 function placeYasin(w) {
   if (w.ents.find(e => e.id === 'yasin')) return;
@@ -335,24 +351,31 @@ function places() {
 // colleagues around Technicity: a few, working in new ways
 function placeWalkers(w) {
   if (!w.map.walkers || w.ents.some(e => e.loop)) return;
-  w.map.walkers.forEach((d, i) => w.add(new Ent({ id: 'walker' + i, look: d.look, x: d.loop[0][0], y: d.loop[0][1], loop: d.loop, blocking: false, speed: 210, pause: 600 * i })));
+  w.map.walkers.forEach((d, i) => w.add(new Ent({ id: 'walker' + i, look: d.look || 'v0', kind: d.kind, x: d.loop[0][0], y: d.loop[0][1], loop: d.loop, blocking: false, speed: d.kind === 'bot' ? 260 : 210, pause: 600 * i })));
+  // the old town's ghostly residents: slow, silent until you speak to them
+  (w.map.ghosts || []).forEach((d, i) => w.add(new Ent({ id: 'ghost' + i, look: d.look, ghost: true, x: d.loop[0][0], y: d.loop[0][1], loop: d.loop, blocking: false, speed: 420, pause: 900 * i, talk: true, speaker: 'ghost', npcLines: S.ghostLines[i % S.ghostLines.length] })));
 }
 function placeCityNpcs(w) {
   placeWalkers(w);
-  if (w.ents.some(e => e.npcLines)) return;
+  if (w.ents.some(e => e.npcLines && !e.ghost)) return;
   const list = [
-    ['npc1', 'v1', 52, 15, 0], ['npc2', 'v2', 54, 15, 0], ['npc3', 'v3', 36, 12, 1], ['npc4', 'v0', 47, 19, 2],
+    ['npc1', 'v1', 52, 15, 2], ['npc2', 'v2', 54, 15, 1], ['npc4', 'v0', 47, 19, 2],
   ];
   for (const [id, look, x, y, dir] of list) w.add(new Ent({ id, look, x, y, dir, talk: true, idleBob: true, blocking: true, npcLines: S.npcLines[id] }));
 }
-async function npcTalk(e) { lock(true); const l = e.npcLines; e._i = ((e._i ?? -1) + 1) % l.length; await talk([['npc', l[e._i]]]); lock(false); }
+const nextLine = e => { const l = e.npcLines; e._i = ((e._i ?? -1) + 1) % l.length; return l[e._i]; };
+async function npcTalk(e) {
+  lock(true); e.talking = true; e.path = []; if (G.world?.player) G.world.face(e, G.world.player);
+  if (e.ghost) audio.sfx('ghost');
+  try { await talk([[e.speaker || 'npc', nextLine(e), null, e.ghost ? null : e.look]]); } finally { e.talking = false; lock(false); }
+}
 async function enterBuilding(id) {
   lock(true); audio.sfx('door'); track('building_entered', id);
   const b = G.town.map.buildings.find(b => b.id === id); G.returnTo = [b.door[0], b.door[1] + 1];
   await fadeOut(300);
   const m = interior(id); const w = new World(m); G.world = w; G.scene = 'inside'; audio.music('inside'); document.body.classList.add('inside'); clearTags();
   makePlayer(w, m.start.x, m.start.y, 3); makeNixy(w, m.start.x + 1, m.start.y, 'follow');
-  for (const np of m.npcs || []) w.add(new Ent({ ...np, talk: true, idleBob: true }));
+  for (const np of m.npcs || []) w.add(new Ent({ ...np, talk: true, idleBob: true, npcLines: np.lines ? S.npcLines[np.lines] : undefined }));
   if (id === 'training') { const bd = m.props.find(p => p.act === 'rosen'); if (bd) bd.draw = (g, x, y) => { text(g, 'ROSENSHINE', x + 6, y + 5, '#1d4ed8'); text(g, '10 PRINCIPLES', x + 6, y + 12, '#334155'); }; }
   const first = !G.visited.has(id); G.visited.add(id); save.set('visited', [...G.visited]); save.set('inside', id); updateHud(); setObjective(SERVICES[id].name + ' · talk to anyone here');
   const sc = new WorldScene(w, {
@@ -374,6 +397,7 @@ async function runBuilding(id, target) {
   try {
     const t = target || {};
     if (t.brief) await serviceMenu(id);
+    else if (t.npcLines) { G.world.face(t, G.world.player); await say([['npc', nextLine(t), null, t.look]]); }
     else if (t.id === 'story') await serviceMenu(id, 'story');
     else if (id === 'arcade' && t.act === 'dud') quip(S.arcadeDud[(t.x + t.y) % S.arcadeDud.length], 2600);
     else if (id === 'arcade' && t.act === 'flap') await serviceMenu(id, 'demo');

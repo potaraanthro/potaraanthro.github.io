@@ -75,10 +75,13 @@ export function town() {
   m.addProp({ kind: 'pad', x: 39, y: 18, w: 3, h: 3, solid: false, act: 'pad' });
   for (const [x, y] of [[28, 13], [36, 10], [44, 10], [52, 10], [36, 17], [43, 17], [52, 17], [58, 12]]) m.addProp({ kind: 'lamp', x, y });
   for (const [x, y] of [[48, 19], [30, 20]]) m.addProp({ kind: 'holo', x, y });
-  // an outdoor meeting pod in the south-east, with colleagues in it (NPCs added by story.js)
-  m.addProp({ kind: 'table', x: 51, y: 14, w: 3, h: 2 });
-  m.addProp({ kind: 'chair', x: 51, y: 13, c: '#0e7490' }); m.addProp({ kind: 'chair', x: 53, y: 13, c: '#6d28d9' });
-  m.addProp({ kind: 'holo', x: 55, y: 14 });
+  // a room-booking kiosk in the south-east (meetings themselves happen indoors, in rooms built for them)
+  m.addProp({ kind: 'holo', x: 53, y: 14 });
+  m.addProp({ kind: 'planter', x: 51, y: 14 }); m.addProp({ kind: 'planter', x: 55, y: 14 });
+  // the old town after dark: a few broken gas lamps and a small graveyard for the office machines
+  for (const [x, y] of [[2, 10], [13, 10], [8, 13]]) m.addProp({ kind: 'oldlamp', x, y });
+  for (const [x, y, lean] of [[8, 19, 0], [10, 19, 1], [12, 19, -1], [9, 20, 0], [11, 20, 1]]) m.addProp({ kind: 'grave', x, y, lean });
+  m.addProp({ kind: 'sign', x: 7, y: 20, label: 'RIP FAX', col: '#b9bfcb' });
   m.addProp({ kind: 'crate', x: 15, y: 9 }); m.addProp({ kind: 'crate', x: 16, y: 9 });
   // trees: dead and sparse in the old town, a dense dark pine wood, bright blossom trees in the city
   const onRoad = (x, y) => [TL.DIRT, TL.WOODPATH, TL.TALL, TL.PLAZA].includes(m.get(x, y));
@@ -97,6 +100,15 @@ export function town() {
   m.walkers = [
     { look: 'v2', loop: [[29, 11], [57, 11]] }, { look: 'v3', loop: [[56, 20], [31, 18]] }, { look: 'v0', loop: [[38, 13], [42, 16], [38, 16]] },
   ];
+  m.walkers.push({ kind: 'bot', loop: [[30, 19], [48, 19], [48, 21], [30, 21]] });
+  // the old town's ghostly residents drift up and down, forever
+  m.ghosts = [
+    { look: 'v0', loop: [[2, 13], [7, 13], [7, 14], [2, 14]] },
+    { look: 'v2', loop: [[12, 9], [16, 13], [12, 13]] },
+    { look: 'v3', loop: [[1, 18], [6, 19], [13, 19], [6, 21]] },
+    { look: 'v1', loop: [[7, 6], [7, 9], [1, 10]] },
+  ];
+  m.haunt = { x0: 18, x1: 24 }; // full gloom up to the woods, fading out by the tall grass
   m.cityStart = { x: 29, y: 12 };
   // Nixy's guided route (short): the payphone, the stars in the woods, then the tall grass
   m.route = [
@@ -125,7 +137,9 @@ export function interior(id) {
     A({ kind: 'table', x: 4, y: 4, w: 6, h: 2 });
     for (let i = 0; i < 3; i++) { A({ kind: 'chair', x: 4 + i * 2, y: 3, c: '#6d28d9' }); A({ kind: 'chair', x: 5 + i * 2, y: 6, c: '#0e7490' }); }
     A({ kind: 'plant', x: -2, y: 2 }); A({ kind: 'plant', x: 15, y: 2 }); A({ kind: 'shelf', x: -2, y: 7, w: 2 }); A({ kind: 'shelf', x: 14, y: 7, w: 2 });
-    m.npcs = [{ id: 'bill', look: 'bill', x: 3 + o, y: 7, dir: 2 }, { id: 'bob', look: 'bob', x: 10 + o, y: 7, dir: 1 }];
+    m.npcs = [{ id: 'bill', look: 'bill', x: 3 + o, y: 7, dir: 2 }, { id: 'bob', look: 'bob', x: 10 + o, y: 7, dir: 1 },
+      // a real hybrid meeting at the table, the Leeds office on the wall behind them
+      { id: 'meet1', look: 'v0', x: 5 + o, y: 3, dir: 0, lines: 'meet1' }, { id: 'meet2', look: 'v3', x: 7 + o, y: 3, dir: 0, lines: 'meet2' }];
   }
   if (id === 'vf') {
     m.rect(3 + o, 4, 8, 4, TL.RUG);
@@ -133,6 +147,7 @@ export function interior(id) {
     A({ kind: 'sofa', x: 5, y: 6, w: 4 });
     A({ kind: 'shelf', x: -2, y: 2, w: 4 }); A({ kind: 'shelf', x: 12, y: 2, w: 4 });
     A({ kind: 'plant', x: 15, y: 8 }); A({ kind: 'plant', x: -2, y: 8 });
+    m.npcs = [{ id: 'avatar', look: 'v3', x: 10 + o, y: 5, dir: 1, lines: 'avatar' }];
   }
   if (id === 'si') {
     A({ kind: 'whiteboard', x: 2, y: 0, w: 7, solid: false, flat: true, board: true });

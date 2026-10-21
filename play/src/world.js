@@ -1,8 +1,20 @@
 // The tile world: maps, entities, grid movement, A* click-to-walk, Nixy's lead/follow modes, camera, rendering.
 import { W, H, T, clock, emit, input } from './core.js';
-import { TL, SOLID, drawTile, drawProp, drawBuilding, person, moth, P, text, textC } from './art.js';
+import { TL, SOLID, drawTile, drawProp, drawBuilding, person, moth, ghostOf, P, text, textC } from './art.js';
 import { drawSky, DRAW2, drawCityBuilding, CITY_STYLE } from './art2.js';
 import { dronePos } from './hd.js';
+
+// a little delivery robot that trundles round the plaza
+function drawBot(g, x, y, t, dir, moving) {
+  const bx = x + 4, by = y + 13 + (moving ? ((t / 90 | 0) % 2) : 0);
+  g.fillStyle = P.ink; g.fillRect(bx - 1, by - 1, 12, 11);
+  g.fillStyle = '#e9e6ff'; g.fillRect(bx, by, 10, 8); g.fillStyle = '#c4b5fd'; g.fillRect(bx, by + 6, 10, 2);
+  g.fillStyle = '#0c0b14'; g.fillRect(bx + 2, by + 2, 6, 3);
+  const ex = dir === 1 ? 0 : dir === 2 ? 2 : 1; if (dir !== 3) { g.fillStyle = '#22d3ee'; g.fillRect(bx + 2 + ex, by + 3, 1, 1); g.fillRect(bx + 5 + ex, by + 3, 1, 1); }
+  g.fillStyle = '#334155'; g.fillRect(bx + 1, by + 8, 3, 2); g.fillRect(bx + 6, by + 8, 3, 2);
+  g.fillStyle = '#ffd60a'; g.fillRect(bx + 3, by - 3, 4, 2); // the parcel
+  g.fillStyle = (t / 400 | 0) % 2 ? '#f472b6' : '#22d3ee'; g.fillRect(bx + 8, by - 3, 1, 2);
+}
 
 export class GameMap {
   constructor(w, h, fill) {
@@ -188,7 +200,8 @@ export class World {
     for (const b of m.buildings) list.push({ y: (b.y + b.h) * T - 2, d: () => (CITY_STYLE[b.style] ? drawCityBuilding : drawBuilding)(g, b, b.x * T - cx, b.y * T - cy, t) });
     for (const e of this.ents) if (!e.hidden && !(skipNixy && e === this.nixy)) list.push({ y: e.py + T, d: () => this.drawEnt(g, e) });
     list.sort((a, b) => a.y - b.y).forEach(o => o.d());
-    if (m.sky) this.drawDrones(g, t, cx, cy, W, H);
+    if (m.sky) { this.drawTaxis(g, t, cx, cy, W); this.drawDrones(g, t, cx, cy, W, H); }
+    if (m.haunt) this.drawHaunt(g, t, cx, cy, W, H);
   }
   // a full render of the map (tiles, props, buildings, no characters) for cinematics
   snapshot() {
@@ -202,7 +215,14 @@ export class World {
   renderNixy(g) { if (this.nixy && !this.nixy.hidden) { g.save(); g.scale(this.zoom, this.zoom); this.drawEnt(g, this.nixy); g.restore(); } }
   drawEnt(g, e) {
     const x = Math.round(e.px - this.cam.x) - 1, y = Math.round(e.py - this.cam.y) - 10;
+    if (e.ghost) { // no shadow, a slow float, a flicker; now and then it nearly vanishes
+      const s = ghostOf(e.look, e.dir, e.f), ph = clock.t / 260 + e.x * 1.3;
+      let a = .7 + .14 * Math.sin(ph); if (((clock.t / 120 | 0) + e.id.length * 11) % 53 === 0) a = .1;
+      g.globalAlpha = a; g.drawImage(s, x + ((18 - s.width) >> 1), y + 26 - s.height + Math.round(Math.sin(clock.t / 480 + e.x) * 2) - 3); g.globalAlpha = 1;
+      return;
+    }
     g.fillStyle = 'rgba(0,0,0,.28)'; g.fillRect(x + 4, y + 23, 10, 3);
+    if (e.kind === 'bot') { drawBot(g, x, y, clock.t, e.dir, !!e.mv); return; }
     if (e.kind === 'moth') { const fl = (clock.t / 160 | 0) % 2; g.drawImage(moth(fl), x - 3, y - 2 + Math.round(Math.sin(clock.t / 300) * 2)); }
     else {
       const bob = e.idleBob && !e.mv ? Math.round(Math.sin(clock.t / 350 + e.x) * .6) : 0;
@@ -220,6 +240,53 @@ export class World {
     }
   }
   bubble(ent, txt, ms = 2200) { this.bubbles = this.bubbles.filter(b => b.ent !== ent); this.bubbles.push({ ent, text: txt, until: clock.t + ms }); }
+  // the old town after dark: colour drained, cold night, fog, rain, lightning, things watching from doorways
+  drawHaunt(g, t, cx, cy, W, H) {
+    const hz = this.map.haunt, x0 = hz.x0 * T - cx, x1 = hz.x1 * T - cx; if (x1 <= 0) return;
+    const R = Math.min(W, Math.ceil(x1)), grad = (c0, c1) => { const gr = g.createLinearGradient(x0, 0, x1, 0); gr.addColorStop(0, c0); gr.addColorStop(1, c1); return gr; };
+    g.save();
+    g.globalCompositeOperation = 'saturation'; g.fillStyle = grad('rgba(128,128,128,.9)', 'rgba(128,128,128,0)'); g.fillRect(0, 0, R, H);
+    g.globalCompositeOperation = 'multiply'; g.fillStyle = grad('rgb(86,98,136)', 'rgb(255,255,255)'); g.fillRect(0, 0, R, H);
+    g.globalCompositeOperation = 'source-over';
+    g.beginPath(); g.rect(0, 0, R, H); g.clip();
+    // eyes in the dark doorways, blinking open now and then
+    for (const b of this.map.buildings) {
+      if (b.style !== 'old') continue;
+      const bx = b.x * T - cx, by = b.y * T - cy; if (bx > W || bx + b.w * T < 0) continue;
+      const k = Math.sin(t / 1400 + b.x * 1.7 + b.y);
+      if (k > .78 && (t / 160 | 0) % 17) { const dx = b.door[0] * T - cx, dy = (b.y + b.h) * T - cy - 13; g.fillStyle = '#ff3b3b'; g.fillRect(dx + 5, dy, 2, 1); g.fillRect(dx + 9, dy, 2, 1); g.fillStyle = 'rgba(255,80,80,.35)'; g.fillRect(dx + 4, dy - 1, 8, 3); }
+      // cobwebs in the top corners
+      g.strokeStyle = 'rgba(225,232,248,.45)'; g.lineWidth = 1; g.beginPath();
+      for (const [ox, sx] of [[bx + 1, 1], [bx + b.w * T - 1, -1]]) { const oy = by + 1; g.moveTo(ox, oy + 8); g.lineTo(ox, oy); g.lineTo(ox + 8 * sx, oy); g.moveTo(ox, oy); g.lineTo(ox + 6 * sx, oy + 6); g.moveTo(ox, oy + 4); g.quadraticCurveTo(ox + 3 * sx, oy + 3, ox + 4 * sx, oy); }
+      g.stroke();
+    }
+    // fog banks drifting along the street
+    for (let i = 0; i < 7; i++) {
+      const wy = (5.5 + i * 2.4) * T, wx = ((t / (55 + i * 9) + i * 173) % (hz.x1 * T + 160)) - 120, sx = Math.round(wx - cx), sy = Math.round(wy - cy);
+      if (sx > R || sx < -140) continue;
+      for (let j = 0; j < 3; j++) { g.fillStyle = `rgba(196,206,230,${.05 - j * .012})`; g.fillRect(sx - j * 10, sy - j * 3, 120 + j * 20, 10 + j * 6); }
+    }
+    // rain
+    g.fillStyle = 'rgba(190,204,238,.32)';
+    for (let i = 0; i < 90; i++) { const rx = ((i * 37.7 + t * .09) % (R + 30)) - 10, ry = ((i * 53.3 + t * .42) % (H + 10)) - 5; g.fillRect(rx | 0, ry | 0, 1, 3); g.fillRect((rx | 0) - 1, (ry | 0) + 3, 1, 2); }
+    // lightning: a double flicker every so often
+    const ph = t % 7300; if (ph < 60 || (ph > 130 && ph < 175)) { g.fillStyle = 'rgba(214,224,255,.28)'; g.fillRect(0, 0, R, H); }
+    const n = t / 7300 | 0; if (n !== this._thN) { this._thN = n; if (this.player && this.player.x < hz.x1) emit('thunder'); }
+    g.restore();
+  }
+  // air taxis gliding over Technicity (only over the city, never the old town)
+  drawTaxis(g, t, cx, cy, W) {
+    const cx0 = (this.map.cityX || 27) * T, cw = (this.map.w - (this.map.cityX || 27)) * T;
+    for (let i = 0; i < 3; i++) {
+      const dir = i % 2 ? -1 : 1, sp = 26 + i * 7, u = ((t / sp + i * 211) % (cw + 60)), wx = dir > 0 ? cx0 - 30 + u : cx0 + cw + 30 - u, wy = (1.1 + i * .85) * T;
+      const x = Math.round(wx - cx), y = Math.round(wy - cy + Math.sin(t / 700 + i) * 1.5); if (x < -20 || x > W + 20 || wx < cx0 - 4) continue;
+      g.fillStyle = P.ink; g.fillRect(x - 1, y - 1, 16, 7);
+      g.fillStyle = ['#e9e6ff', '#fde68a', '#bff7f2'][i]; g.fillRect(x, y, 14, 5);
+      g.fillStyle = '#22d3ee'; g.fillRect(dir > 0 ? x + 8 : x + 2, y + 1, 4, 2);
+      g.fillStyle = (t / 300 | 0) % 2 ? '#f472b6' : '#ffd60a'; g.fillRect(dir > 0 ? x : x + 13, y + 2, 1, 1);
+      g.fillStyle = 'rgba(167,139,250,.6)'; g.fillRect(x + 3, y + 6, 8, 1);
+    }
+  }
   drawDrones(g, t, cx, cy, W, H) {
     for (let i = 0; i < 3; i++) {
       const d = dronePos(i, t), x = Math.round(d.x - cx), y = Math.round(d.y - cy); if (x < -10 || x > W + 10 || y < -10 || y > H + 10) continue;

@@ -161,6 +161,18 @@ const STORE = {
 
 // ---------------- city props (override the old ones in the city) ----------------
 export const DRAW2 = {
+  grave(g, p, x, y, t) { // a crooked headstone; the old town buries its fax machines
+    const lean = p.lean || 0; R(g, 'rgba(0,0,0,.3)', x + 3, y + 13, 11, 3);
+    R(g, P.ink, x + 3 + lean, y + 1, 10, 13); R(g, '#9aa0ad', x + 4 + lean, y + 2, 8, 11); R(g, '#b9bfcb', x + 4 + lean, y + 2, 8, 2); R(g, '#7b8190', x + 11 + lean, y + 3, 1, 10);
+    R(g, '#5c6270', x + 6 + lean, y + 5, 4, 1); R(g, '#5c6270', x + 7 + lean, y + 4, 2, 5);
+    R(g, '#4b5a3a', x + 2, y + 13, 3, 2); R(g, '#4b5a3a', x + 11, y + 14, 3, 1);
+  },
+  oldlamp(g, p, x, y, t) { // a rusted gas lamp that can't decide whether it's on
+    R(g, 'rgba(0,0,0,.3)', x + 5, y + 13, 7, 3);
+    R(g, '#2b2a2e', x + 7, y - 12, 2, 26); R(g, '#45434a', x + 7, y - 12, 1, 26);
+    R(g, P.ink, x + 4, y - 18, 8, 7); const on = p.on = (Math.sin(t / 90 + p.x) > -.2) && ((t / 170 | 0) + p.x) % 11 > 1;
+    R(g, on ? '#f6d77a' : '#5a5136', x + 5, y - 17, 6, 5); R(g, '#2b2a2e', x + 4, y - 19, 8, 1);
+  },
   pine(g, p, x, y, t) { // layered conifer, cool and dark, catching a little light on one side
     R(g, 'rgba(0,0,0,.32)', x + 1, y + 12, 15, 4); R(g, '#2b1d14', x + 7, y + 7, 3, 8);
     const L = (yy, hw, c1, c2) => { for (let i = 0; i < 6; i++) { const w2 = Math.round(hw * (i + 2) / 7); R(g, i === 5 ? P.ink : c1, x + 8 - w2, y + yy + i, w2 * 2, 1); R(g, c2, x + 8 - w2, y + yy + i, Math.max(1, w2 - 2), 1); } };

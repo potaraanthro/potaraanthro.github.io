@@ -73,16 +73,23 @@ const amb = document.getElementById('ambient'), actx = amb.getContext('2d'); amb
 export const view = { k: 1, css: 1 };
 export function fit() {
   const vw = innerWidth, vh = innerHeight;
-  const portrait = vh > vw * 1.05;
-  document.body.classList.toggle('portrait', portrait);
-  const s = portrait ? vw / W : Math.min(vw * .975 / W, vh * .955 / H);
+  const touch = matchMedia('(pointer: coarse)').matches, portrait = vh > vw * 1.05;
+  // a phone held sideways: no frame, no margins, the game takes the whole height of the screen
+  const land = touch && !portrait && vh <= 600;
+  document.body.classList.toggle('portrait', portrait); document.body.classList.toggle('land', land); document.body.classList.toggle('touch', touch);
+  const s = portrait ? vw / W : land ? Math.min(vw / W, vh / H) : Math.min(vw * .975 / W, vh * .955 / H);
   const gw = Math.round(W * s), gh = Math.round(H * s);
   canvas.style.width = gw + 'px'; canvas.style.height = gh + 'px';
   stage.style.setProperty('--gw', gw + 'px'); stage.style.setProperty('--gh', gh + 'px');
   const dpr = Math.min(window.devicePixelRatio || 1, 2), hw = Math.min(2560, Math.round(gw * dpr));
   hd.width = hw; hd.height = Math.round(hw * H / W); view.k = hd.width / W; view.css = s;
 }
-addEventListener('resize', fit); fit();
+addEventListener('resize', fit); addEventListener('orientationchange', () => setTimeout(fit, 250)); fit();
+// upright phones get a button that asks for landscape (Android can lock it; elsewhere it's a nudge to turn the phone)
+document.getElementById('rotate')?.addEventListener('click', async () => {
+  try { await document.documentElement.requestFullscreen?.({ navigationUI: 'hide' }); await screen.orientation?.lock?.('landscape'); } catch (e) { }
+  setTimeout(fit, 300);
+});
 
 // ---------------- loop ----------------
 const STEP = 1000 / 60; let acc = 0, last = performance.now(), frameN = 0;
@@ -104,7 +111,8 @@ function frame(now) {
   acc += dt;
   while (acc >= STEP) { acc -= STEP; if (!clock.paused) { tick(STEP); scene?.update?.(STEP); } }
   ctx.save(); hctx.setTransform(1, 0, 0, 1, 0, 0); hctx.clearRect(0, 0, hd.width, hd.height);
-  if (fx.shake > 0) { const sx = (Math.random() - .5) * fx.shake, sy = (Math.random() - .5) * fx.shake; ctx.translate(sx, sy); hctx.translate(sx * view.k, sy * view.k); }
+  // shake in whole pixels, so it never blurs the art
+  if (fx.shake > 0) { const sx = Math.round((Math.random() - .5) * fx.shake), sy = Math.round((Math.random() - .5) * fx.shake); ctx.translate(sx, sy); hctx.translate(sx * view.k, sy * view.k); }
   const cw = scene?.legacy ? LW : W;
   if (canvas.width !== cw) { canvas.width = cw; canvas.height = scene?.legacy ? LH : H; ctx.imageSmoothingEnabled = false; }
   if (scene?.legacy) { scene.render(ctx); }

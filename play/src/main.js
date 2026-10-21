@@ -11,7 +11,7 @@ addEventListener('unhandledrejection', e => fail(e.reason));
 // Readable transcript of the whole script, for screen readers and search engines.
 (function transcript() {
   const out = []; const line = l => out.push(`<p><b>${SPEAKERS[l[0]]?.name || ''}</b> ${String(l[1]).replace(/</g, '&lt;')}</p>`);
-  for (const k in S) { const v = S[k]; if (Array.isArray(v)) v.forEach(x => { if (Array.isArray(x)) line(x); else if (x && x.t) out.push(`<p>Choice: ${x.t}</p>`); else if (x && x.line) line(x.line); else if (x && x.lines) { x.lines.forEach(line); if (x.q) out.push(`<p>Choice: ${x.q}</p>`); (x.after || []).forEach(line); if (x.ask) { x.ask.choices.forEach(c => out.push(`<p>Choice: ${c.t}</p>`)); (x.ask.yes || []).forEach(line); (x.ask.no || []).forEach(line); } } }); }
+  for (const k in S) { const v = S[k]; if (Array.isArray(v)) v.forEach(x => { if (Array.isArray(x) && !SPEAKERS[x[0]]) x.forEach(t => out.push(`<p>${String(t).replace(/</g, '&lt;')}</p>`)); else if (Array.isArray(x)) line(x); else if (x && x.t) out.push(`<p>Choice: ${x.t}</p>`); else if (x && x.line) line(x.line); else if (x && x.lines) { x.lines.forEach(line); if (x.q) out.push(`<p>Choice: ${x.q}</p>`); (x.after || []).forEach(line); if (x.ask) { x.ask.choices.forEach(c => out.push(`<p>Choice: ${c.t}</p>`)); (x.ask.yes || []).forEach(line); (x.ask.no || []).forEach(line); } } }); }
   for (const f of Object.values(FRAGMENTS)) out.push(`<p><b>Fragment: ${f.t}.</b> ${f.b}</p>`);
   document.getElementById('transcript').innerHTML = '<h2>Transcript</h2>' + out.join('');
 })();
