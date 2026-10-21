@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Nixy's World · Potara</title>
+<meta name="description" content="Potara is a future workplace consultancy. Meet Nixy, our company avatar, and explore what we do in a playable city of the future.">
+<meta name="theme-color" content="#0c0b14">
+<script src="../config.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Instrument+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&family=Press+Start+2P&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="assets/nixy.webp">
+<script type="importmap">{ "imports": { "three": "./vendor/three/three.module.min.js", "three/addons/": "./vendor/three/addons/" } }</script>
+</head>
+<body>
+<canvas id="ambient" aria-hidden="true"></canvas>
+<main id="stage" aria-label="Nixy's World, a playable tour of Potara">
+  <div id="screen">
+    <canvas id="game" aria-hidden="true"></canvas>
+    <canvas id="fx" aria-hidden="true"></canvas>
+    <div id="tags" aria-hidden="true"></div>
+    <div id="grade" aria-hidden="true"><i class="tilt top"></i><i class="tilt bot"></i></div>
+    <div id="crt" aria-hidden="true"></div>
+    <div id="hud">
+      <div class="hl">
+        <span class="brand">Potara<i>·</i><b>Technicity</b></span>
+        <div id="obj" hidden><span class="ok">NEXT</span><span id="objText"></span></div>
+      </div>
+      <div class="hr">
+        <span id="hudFrag" class="chip" title="Philosophy fragments found">◆ 0/5</span>
+        <span id="hudProj" class="chip" hidden>▣ 0/6</span>
+        <button id="hudDossier" class="hb" type="button" hidden>Services</button>
+        <button id="hudSound" class="hb" type="button" aria-pressed="false">♪ Off</button>
+        <button id="hudMenu" class="hb" type="button">Menu</button>
+        <a id="hudTrad" class="hb ghost" href="../index.html">Classic site ↗</a>
+      </div>
+    </div>
+    <div id="overlay" hidden></div>
+    <div id="panel" hidden></div>
+    <div id="toast" role="status" hidden></div>
+    <div id="card" hidden></div>
+    <div id="menu" hidden></div>
+  </div>
+  <div id="dlg" hidden>
+    <div id="dlgPor" class="por"><img alt=""></div>
+    <div class="box">
+      <span id="dlgTag" class="tag">NIXY</span>
+      <button id="dlgX" class="xbtn" type="button" aria-label="Close conversation" title="Close (Esc)" hidden>×</button>
+      <p id="dlgLine" class="line"></p>
+      <div id="dlgOpts" class="opts"></div>
+      <span id="dlgNext" class="next" aria-hidden="true"><kbd>Space</kbd> ▸</span>
+    </div>
+  </div>
+  <div id="live" class="sr" aria-live="polite"></div>
+</main>
+
+<section id="title" hidden>
+  <video class="tvid" autoplay muted loop playsinline poster="assets/video/hybrid-teaser-poster.jpg" aria-hidden="true">
+    <source src="assets/video/hybrid-teaser.webm" type="video/webm"><source src="assets/video/hybrid-teaser.mp4" type="video/mp4">
+  </video>
+  <div class="tbg" aria-hidden="true"></div>
+  <div id="tMain" class="tcard">
+    <div class="tkick"><span>Potara</span> presents</div>
+    <h1>Nixy's <em>World</em></h1>
+    <p class="tsub">A playable city of the future. Meet Nixy, find the challenge you want solved, and leave with a plan. About five minutes.</p>
+    <p id="tResume" class="tresume" hidden></p>
+    <div class="tbtns">
+      <button id="tContinue" class="cta" type="button" hidden>Continue where you left off ▸</button>
+      <button id="tStart" class="cta" type="button">Start ▸</button>
+      <a class="lnk" href="../index.html" id="tTrad">I'd rather see the classic website</a>
+    </div>
+    <p class="tkeys"><kbd>Click</kbd> walk and talk <kbd>WASD</kbd> move <kbd>Space</kbd> next / pick the first option <kbd>Esc</kbd> close</p>
+  </div>
+  <div id="tLook" class="tcard" hidden>
+    <div class="tkick">Step 1 of 1</div>
+    <h2>Pick your look</h2>
+    <div class="looks">
+      <button type="button" data-look="hero" aria-label="Look 0"><canvas width="18" height="26"></canvas></button>
+      <button type="button" data-look="v0" aria-label="Look 1"><canvas width="18" height="26"></canvas></button>
+      <button type="button" data-look="v1" aria-label="Look 2"><canvas width="18" height="26"></canvas></button>
+      <button type="button" data-look="v2" aria-label="Look 3"><canvas width="18" height="26"></canvas></button>
+      <button type="button" data-look="v3" aria-label="Look 4"><canvas width="18" height="26"></canvas></button>
+    </div>
+  </div>
+  <img class="tnixy" src="assets/nixy.webp" alt="Nixy, Potara's company avatar">
+</section>
+
+<div id="fail" hidden><p>Nixy tripped over a cable. Sorry!</p><a class="cta" href="../index.html">Go to the classic site</a></div>
+<noscript><p style="color:#fff;padding:2rem">Nixy's World needs JavaScript. <a href="../index.html" style="color:#19d3c5">Visit the classic site</a>.</p></noscript>
+
+<section id="transcript" class="sr" aria-label="Transcript of Nixy's World"></section>
+<script type="module" src="src/main.js"></script>
+</body>
+</html>
