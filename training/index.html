@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Potara Training Lab: custom, interactive training in the medium each skill is learned in. 3D assembly, guided software walkthroughs, mind maps and anatomy you can turn in your hand.">
+<meta name="theme-color" content="#050816">
+<meta property="og:title" content="Potara Training Lab">
+<meta property="og:description" content="Tailored training, in every medium. Build a radio, walk through an app, and tie a concept together in 3D.">
+<meta property="og:type" content="website">
+<link rel="icon" href="../img/nixy.webp">
+<title>Potara Training Lab</title>
+<script src="../config.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Press+Start+2P&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="training.css">
+<script type="importmap">{ "imports": { "three": "./vendor/three.module.min.js" } }</script>
+<script>document.documentElement.classList.add('js');if(matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.classList.add('rm');</script>
+</head>
+<body>
+
+<header class="nav" id="nav">
+  <div class="nav-in">
+    <a class="brand" href="../" aria-label="Potara home"><span class="brand-mark" aria-hidden="true"><i></i><i></i></span>POTARA <em>Training Lab</em></a>
+    <nav class="nav-links" aria-label="Chapters">
+      <a href="#hands">Hands-on</a><a href="#software">Software</a><a href="#theory">Theory</a><a href="#plan">Your plan</a>
+    </nav>
+    <a class="btn btn-pearl btn-sm" href="#plan">Build my training</a>
+  </div>
+  <div class="nav-prog"><i id="navProg"></i></div>
+</header>
+
+<aside class="rail" aria-label="Your journey">
+  <a href="#hands" data-rail="hands"><i></i><span>01 Hands-on</span></a>
+  <a href="#software" data-rail="software"><i></i><span>02 Software</span></a>
+  <a href="#theory" data-rail="theory"><i></i><span>03 Theory</span></a>
+  <a href="#plan" data-rail="plan"><i></i><span>04 Your plan</span></a>
+</aside>
+
+<main>
+
+<!-- ============ INTRO: pick a path ============ -->
+<section class="intro" id="intro">
+  <div class="intro-bg" aria-hidden="true"><div class="grid-floor"></div><div class="glow g1"></div><div class="glow g2"></div></div>
+  <div class="wrap intro-in">
+    <p class="eyebrow">Potara Training Lab</p>
+    <h1 class="h1">Teach every skill in the medium it’s <span class="grad-text">actually learned in.</span></h1>
+    <p class="lede">Custom, interactive training curated by Potara. Hands-on tasks in 3D. Software in the very screens your team uses. Theory as maps you build and models you can turn in your hand.</p>
+
+    <div class="ask" data-reveal>
+      <p class="ask-q"><span class="mono">Start here</span>What does your team need to learn?</p>
+      <div class="paths">
+        <button class="path" data-path="hands" style="--c:var(--peach)">
+          <span class="path-ico ico-hands" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="path-n mono">01 · Physical tasks</span>
+          <b>Build, fix or assemble something</b>
+          <span class="path-d">Step-by-step 3D assembly</span>
+        </button>
+        <button class="path" data-path="software" style="--c:var(--ice)">
+          <span class="path-ico ico-soft" aria-hidden="true"><i></i><i></i></span>
+          <span class="path-n mono">02 · Platforms &amp; software</span>
+          <b>Use a platform or an app</b>
+          <span class="path-d">Guided phone and desktop walkthroughs</span>
+        </button>
+        <button class="path" data-path="theory" style="--c:var(--lilac)">
+          <span class="path-ico ico-theory" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+          <span class="path-n mono">03 · Theoretical knowledge</span>
+          <b>Understand how something works</b>
+          <span class="path-d">Mind maps and 3D models</span>
+        </button>
+      </div>
+      <button class="tour" data-path="all">Show me all three <span aria-hidden="true">↓</span></button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 01 HANDS-ON: radio assembly ============ -->
+<section class="ch" id="hands" data-ch="hands" style="--c:var(--peach)">
+  <div class="wrap">
+    <div class="ch-head" data-reveal>
+      <p class="kicker mono"><b>01</b> Physical tasks · 3D assembly</p>
+      <h2 class="h2">Put it together before you pick it up.</h2>
+      <p class="lede">Every part, every step, from every angle. Learners turn the model, explode it, and watch each piece go home before they touch the real thing. Here: a transistor radio, from bare housing to first broadcast.</p>
+    </div>
+
+    <div class="radio" id="radio">
+      <ol class="steps" id="radioSteps" aria-label="Assembly steps"></ol>
+      <div class="viewport v-radio">
+        <canvas id="radioCanvas" aria-label="Interactive 3D model of a radio being assembled. Drag to turn it."></canvas>
+        <div class="tags" id="radioTags" aria-hidden="true"></div>
+        <div class="callout" id="radioCallout" hidden><i class="c-dot"></i><div class="c-box"><span class="c-n mono"></span><b></b></div></div>
+        <div class="hud top"><span class="hud-badge mono" id="radioBadge">Step 0 / 9</span><span class="hud-hint mono">Drag to turn</span></div>
+        <div class="hud bottom">
+          <div class="ctl">
+            <button class="ic" id="radioPrev" aria-label="Previous step">‹</button>
+            <button class="ic play" id="radioPlay" aria-label="Pause">❚❚</button>
+            <button class="ic" id="radioNext" aria-label="Next step">›</button>
+          </div>
+          <div class="ctl">
+            <button class="chip" id="radioExplode" aria-pressed="false">Exploded view</button>
+            <button class="chip" id="radioSound">▶ Hear it</button>
+          </div>
+        </div>
+        <div class="tl"><i id="radioTl"></i></div>
+        <p class="nogl" hidden>3D needs WebGL, which this browser has turned off. The steps on the left still tell the whole story.</p>
+      </div>
+    </div>
+
+    <ul class="uses" data-reveal><li class="mono">Works for</li><li>Assembly lines</li><li>Field repair</li><li>Equipment set-up</li><li>Lab procedures</li><li>Safety checks</li></ul>
+  </div>
+</section>
+
+<!-- ============ 02 SOFTWARE: phone + desktop ============ -->
+<section class="ch" id="software" data-ch="software" style="--c:var(--ice)">
+  <div class="wrap">
+    <div class="ch-head" data-reveal>
+      <p class="kicker mono"><b>02</b> Platforms &amp; software · guided walkthroughs</p>
+      <h2 class="h2">Learn the software in the software.</h2>
+      <p class="lede">We rebuild your real workflow, across every device it touches, then let people watch it once and do it themselves. Below, an expense claim travels from a phone to a manager’s laptop and back.</p>
+    </div>
+
+    <div class="soft" id="soft">
+      <div class="soft-bar">
+        <div class="seg" role="radiogroup" aria-label="Mode">
+          <button role="radio" aria-checked="true" data-mode="watch">Watch it</button>
+          <button role="radio" aria-checked="false" data-mode="try">Try it yourself</button>
+        </div>
+        <p class="soft-note mono">Sample app shown. We build this around the platform you already use.</p>
+      </div>
+
+      <div class="dev-wrap" id="devWrap">
+        <div class="dev-stage" id="devStage">
+
+          <!-- Laptop -->
+          <div class="laptop" id="laptop" data-dev="laptop">
+            <div class="lid"><div class="cam"></div>
+              <div class="screen" id="lScreen">
+                <div class="web">
+                  <aside class="w-side">
+                    <span class="w-logo"><i></i>Ledger</span>
+                    <a>Home</a><a>My claims</a><a class="on" id="lNavApprovals">Approvals <em id="lBadge">0</em></a><a>Reports</a>
+                    <span class="w-user"><i>AK</i>Alex Kim<br><small>Team lead</small></span>
+                  </aside>
+                  <div class="w-main">
+                    <div class="w-top"><b>Approvals</b><span class="w-search">Search claims</span></div>
+                    <div class="w-cards">
+                      <div><span>Waiting</span><b id="lWaiting">0</b></div><div><span>Approved this month</span><b id="lApprovedCount">14</b></div><div><span>Team spend</span><b>£2,140</b></div>
+                    </div>
+                    <table class="w-table">
+                      <thead><tr><th>Who</th><th>Merchant</th><th>Category</th><th>Amount</th><th>Status</th></tr></thead>
+                      <tbody>
+                        <tr class="w-new" id="lRow"><td><i class="av">S</i>Sam Patel</td><td>Café Nova</td><td>Meals</td><td>£18.40</td><td><span class="st wait" id="lRowStatus">Waiting</span></td></tr>
+                        <tr><td><i class="av b">J</i>Jo Ahmed</td><td>Rail Direct</td><td>Travel</td><td>£42.10</td><td><span class="st ok">Approved</span></td></tr>
+                        <tr><td><i class="av c">R</i>Ravi Shah</td><td>Desk Co.</td><td>Equipment</td><td>£96.00</td><td><span class="st ok">Approved</span></td></tr>
+                      </tbody>
+                    </table>
+                    <div class="w-panel" id="lPanel">
+                      <div class="w-rcpt"><b>CAFÉ NOVA</b><span>Flat white ×2</span><span>Sourdough</span><hr><b>TOTAL £18.40</b></div>
+                      <div class="w-pd">
+                        <span class="mono">Claim from Sam Patel</span>
+                        <b>£18.40 · Meals</b>
+                        <span>Café Nova · Today · Client catch-up</span>
+                        <span class="w-check">✓ Within policy</span>
+                        <div class="w-btns"><button class="w-ghost">Query</button><button class="w-approve" id="lApprove">Approve</button></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="toast" id="lToast"><i>S</i><div><b>New claim from Sam</b><span>Café Nova · £18.40 · Meals</span></div></div>
+                </div>
+                <div class="coach" aria-hidden="true"><div class="ring"></div><div class="tip"></div><div class="cursor"></div></div>
+              </div>
+            </div>
+            <div class="base"><i></i></div>
+          </div>
+
+          <!-- Phone -->
+          <div class="phone" id="phone" data-dev="phone">
+            <div class="ph-frame"><div class="island"></div>
+              <div class="screen" id="pScreen">
+                <div class="status mono"><span>9:41</span><span>●●● ▮</span></div>
+                <!-- p1 home -->
+                <div class="ps on" data-ps="home">
+                  <div class="p-head"><span class="w-logo"><i></i>Ledger</span><i class="av">S</i></div>
+                  <p class="p-hi">Hi Sam</p>
+                  <div class="p-card"><span>Claimed this month</span><b id="pMonth">£248.60</b><div class="p-spark"><i style="--h:30%"></i><i style="--h:55%"></i><i style="--h:40%"></i><i style="--h:80%"></i><i style="--h:60%"></i><i style="--h:35%"></i><i style="--h:70%"></i></div></div>
+                  <p class="p-sub mono">Recent</p>
+                  <ul class="p-list">
+                    <li class="p-new" id="pNewItem"><i class="cat m">☕</i><div><b>Café Nova</b><span>Meals · Today</span></div><em id="pNewStatus">Pending</em></li>
+                    <li><i class="cat t">🚆</i><div><b>Rail Direct</b><span>Travel · Mon</span></div><em class="ok">Approved</em></li>
+                    <li><i class="cat e">🖥</i><div><b>Desk Co.</b><span>Equipment · 3 Oct</span></div><em class="ok">Approved</em></li>
+                  </ul>
+                  <button class="p-fab" id="pNew">＋ New claim</button>
+                </div>
+                <!-- p2 camera -->
+                <div class="ps pcam" data-ps="camera">
+                  <p class="cam-t mono">Fit the receipt in the frame</p>
+                  <div class="vf"><span class="cnr a"></span><span class="cnr b"></span><span class="cnr c"></span><span class="cnr d"></span>
+                    <div class="rcpt"><b>CAFÉ NOVA</b><small>12 King St · Manchester</small><span>Flat white ×2 <em>£7.40</em></span><span>Sourdough <em>£11.00</em></span><hr><span><b>TOTAL</b><em><b>£18.40</b></em></span><small>28/10/2026 · 12:41</small></div>
+                    <i class="scan"></i>
+                  </div>
+                  <button class="shutter" id="pShutter" aria-label="Take photo"></button>
+                  <div class="flash"></div>
+                </div>
+                <!-- p3 review -->
+                <div class="ps" data-ps="review">
+                  <div class="p-bar"><span>‹</span><b>Check your claim</b><span></span></div>
+                  <p class="p-ai mono">✦ Read from your receipt</p>
+                  <label class="fld"><span>Merchant</span><b data-type="Café Nova"></b></label>
+                  <label class="fld"><span>Date</span><b data-type="28 Oct 2026"></b></label>
+                  <label class="fld"><span>Amount</span><b data-type="£18.40"></b></label>
+                  <p class="p-sub mono">Category</p>
+                  <div class="cats"><button>Travel</button><button id="pCatMeals">Meals</button><button>Equipment</button></div>
+                  <button class="p-cta" id="pSubmit" disabled>Submit claim</button>
+                </div>
+                <!-- p4 sent -->
+                <div class="ps done" data-ps="sent">
+                  <svg class="tick" viewBox="0 0 80 80"><circle cx="40" cy="40" r="34"/><path d="M25 41l10 10 20-22"/></svg>
+                  <b>Claim sent</b><span>Alex will review it. We’ll let you know.</span>
+                  <button class="p-ghost">Back to home</button>
+                </div>
+                <div class="push" id="pPush"><i class="w-logo"><i></i></i><div><b>Ledger · now</b><span>Your £18.40 claim was approved ✓</span></div></div>
+                <div class="coach" aria-hidden="true"><div class="ring"></div><div class="tip"></div><div class="finger"></div></div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="soft-cap">
+        <div class="cap-n mono" id="softN">Step 1 of 7</div>
+        <div class="cap-t"><b id="softT">Start a claim</b><span id="softD">Sam has lunch with a client and wants the money back.</span></div>
+        <div class="cap-ctl"><button class="ic" id="softPrev" aria-label="Restart">↺</button><button class="ic play" id="softPlay" aria-label="Pause">❚❚</button></div>
+      </div>
+      <ol class="dots" id="softDots" aria-hidden="true"></ol>
+    </div>
+
+    <ul class="uses" data-reveal><li class="mono">Works for</li><li>Onboarding</li><li>New system roll-outs</li><li>CRM and ERP</li><li>Microsoft 365 and Power Platform</li><li>Mobile field apps</li></ul>
+  </div>
+</section>
+
+<!-- ============ 03 THEORY: mind map + heart ============ -->
+<section class="ch" id="theory" data-ch="theory" style="--c:var(--lilac)">
+  <div class="wrap">
+    <div class="ch-head" data-reveal>
+      <p class="kicker mono"><b>03</b> Theoretical knowledge · mind maps + 3D models</p>
+      <h2 class="h2">Tie the ideas together. Then hold them.</h2>
+      <p class="lede">A mind map grows one concept at a time, then draws the links between them, because understanding lives in the connections. Every idea is wired to a 3D model: tap a concept and the heart shows you where it happens.</p>
+    </div>
+
+    <div class="theory">
+      <div class="panel map-panel">
+        <div class="panel-h"><span class="mono">Concept map · The heart</span><button class="chip" id="mapReplay">↺ Rebuild</button></div>
+        <svg id="mindmap" viewBox="0 0 800 620" role="img" aria-label="Mind map of the heart: structure, circulation, electrical system and vessels, with links between them."></svg>
+        <p class="map-hint mono">Tap any idea to find it in the heart</p>
+      </div>
+      <div class="panel heart-panel">
+        <div class="panel-h">
+          <div class="seg sm" role="radiogroup" aria-label="View">
+            <button role="radio" aria-checked="true" data-hmode="anatomy">Anatomy</button>
+            <button role="radio" aria-checked="false" data-hmode="flow">Blood flow</button>
+            <button role="radio" aria-checked="false" data-hmode="electric">Electrical</button>
+          </div>
+          <span class="bpm mono"><i>♥</i> <b id="bpm">72</b> BPM</span>
+        </div>
+        <div class="viewport v-heart">
+          <canvas id="heartCanvas" aria-label="Interactive 3D heart. Drag to turn it."></canvas>
+          <div class="tags" id="heartTags" aria-hidden="true"></div>
+          <div class="info" id="heartInfo"><span class="mono" id="hiK">Explore</span><b id="hiT">The heart</b><p id="hiP">A fist-sized pump with two sides and four chambers. Tap an idea on the map, or drag to turn the model.</p></div>
+          <canvas class="ecg" id="ecg" aria-hidden="true"></canvas>
+          <p class="nogl" hidden>3D needs WebGL, which this browser has turned off. The concept map still works.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="quiz" id="quiz" data-reveal>
+      <div class="quiz-h"><span class="mono">Knowledge check</span><span class="mono" id="quizScore">0 / 3</span></div>
+      <p class="quiz-q" id="quizQ"></p>
+      <div class="quiz-a" id="quizA"></div>
+      <p class="quiz-f" id="quizF" aria-live="polite"></p>
+    </div>
+
+    <ul class="uses" data-reveal><li class="mono">Works for</li><li>Clinical and science education</li><li>Compliance and policy</li><li>Product knowledge</li><li>Engineering principles</li><li>Leadership frameworks</li></ul>
+  </div>
+</section>
+
+<!-- ============ 04 PLAN: build your programme ============ -->
+<section class="ch plan" id="plan" data-ch="plan" style="--c:var(--mint)">
+  <div class="wrap">
+    <div class="ch-head" data-reveal>
+      <p class="kicker mono"><b>04</b> Your plan</p>
+      <h2 class="h2">Now, your team’s version.</h2>
+      <p class="lede">Tell us a little and we’ll sketch a draft programme. Potara turns it into finished training around your real tools, parts and ideas.</p>
+    </div>
+    <div class="builder">
+      <form class="b-form" id="bForm" autocomplete="off">
+        <label class="b-f"><span class="mono">Who is it for?</span><input id="bTeam" maxlength="60" placeholder="e.g. Field engineers"></label>
+        <label class="b-f"><span class="mono">What should they be able to do?</span><input id="bGoal" maxlength="90" placeholder="e.g. Install and test a new sensor kit"></label>
+        <fieldset class="b-f"><legend class="mono">Mediums</legend>
+          <div class="b-chips">
+            <label class="tog" style="--c:var(--peach)"><input type="checkbox" name="m" value="hands"><span>3D hands-on</span></label>
+            <label class="tog" style="--c:var(--ice)"><input type="checkbox" name="m" value="software"><span>Software walkthrough</span></label>
+            <label class="tog" style="--c:var(--lilac)"><input type="checkbox" name="m" value="theory"><span>Mind map + 3D model</span></label>
+          </div>
+        </fieldset>
+        <fieldset class="b-f"><legend class="mono">Format</legend>
+          <div class="b-chips">
+            <label class="tog"><input type="radio" name="f" value="video"><span>Video</span></label>
+            <label class="tog"><input type="radio" name="f" value="interactive" checked><span>Interactive</span></label>
+            <label class="tog"><input type="radio" name="f" value="blended"><span>Blended with a live workshop</span></label>
+          </div>
+        </fieldset>
+      </form>
+      <div class="b-out" id="bOut" aria-live="polite">
+        <div class="b-card">
+          <div class="b-top"><span class="mono">Draft programme</span><span class="mono b-by">Curated by Potara</span></div>
+          <h3 id="oTitle">Your team’s training</h3>
+          <p class="b-goal" id="oGoal">Pick at least one medium to see a draft.</p>
+          <ol class="b-mods" id="oMods"></ol>
+          <div class="b-meta" id="oMeta"></div>
+        </div>
+        <div class="b-cta">
+          <a class="btn btn-pearl" id="bSend" href="#">Send this brief to Potara</a>
+          <a class="btn btn-ghost" id="bCall" href="#">Book a call</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap foot-in">
+    <p>We’re wide-eyed <span role="img" aria-label="eyes">👀</span> optimists, building the future we’re so in love with &lt;3</p>
+    <div class="foot-l"><a href="../">Potara home</a><a href="../play/">Nixy’s World ↗</a><a href="#plan">Build my training</a></div>
+    <span class="mono">Potara · Future workplace consultancy · Manchester</span>
+  </div>
+</footer>
+
+<aside class="guide off" id="guide" aria-live="polite">
+  <img src="../img/nixy.webp" alt="Nixy, Potara’s guide" width="64" height="85">
+  <div class="g-box"><span class="g-plate">NIXY</span><p id="guideLine"></p></div>
+  <button class="g-x" id="guideX" aria-label="Hide Nixy">×</button>
+</aside>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

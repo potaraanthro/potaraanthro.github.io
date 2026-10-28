@@ -6,6 +6,7 @@ The Potara homepage with **Nixy's World** (the Pokémon-style journey) built int
 index.html      The homepage. Scroll-driven story, Nixy's cameos, and the "Press start" section for the game
 config.js       Your settings (form address, email, booking link). The only file you must edit
 play/           Nixy's World, the game. Also works on its own at yoursite/play/
+training/       The Training Lab: the tailored-training journey (3D radio assembly, phone + desktop walkthrough, mind map + 3D heart, programme builder)
 img/ video/     Homepage images and videos
 .nojekyll       Tells GitHub Pages to serve the files exactly as they are
 ```
